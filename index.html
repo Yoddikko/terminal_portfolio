@@ -5,14 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terminal Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
-  <div class="terminal">
-    <div id="output">
-      <p>welcome@portfolio:~$ <span class="cursor">|</span></p>
-    </div>
-    <input id="input" autofocus />
-  </div>
+    <div class="terminal">
+        <div id="output"></div>
+      
+        <div class="input-line">
+          <span class="prompt">welcome@portfolio:~$</span>
+          <input id="input" autofocus autocomplete="off" />
+        </div>
+      
+        <div id="scroll-anchor"></div> <!-- 👈 dummy per scroll -->
+      </div>
+      
   <script src="script.js"></script>
 </body>
 </html>

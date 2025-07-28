@@ -1,32 +1,65 @@
 body {
-    background-color: #0f0f0f;
-    color: #00ff00;
-    font-family: monospace;
     margin: 0;
-    padding: 20px;
+    font-family: monospace;
+    background: black;
+    color: #33ff33;
   }
   
   .terminal {
-    max-width: 800px;
-    margin: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
   }
   
-  input {
-    width: 100%;
-    background: none;
+  #output {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1.2;
+  }
+  
+  .input-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* spazio tra prompt e input */
+  }
+  
+  .input-line .prompt {
+    white-space: nowrap; /* evita che vada a capo */
+  }
+  
+  #input {
+    flex-grow: 1; /* occupa il resto dello spazio disponibile */
+    background: black;
+    color: #33ff33;
     border: none;
-    color: #00ff00;
-    font: inherit;
     outline: none;
+    font-family: monospace;
+    font-size: 1rem;
+  }
+    
+  .prompt {
+    color: #33ff33;
   }
   
-  .cursor {
-    animation: blink 1s step-start infinite;
+  pre {
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1.1;
   }
   
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
+  a[data-cmd] {
+    color: #2e8cbf;           /* Verde brillante */
+    text-decoration: underline;  /* Sottolineato (opzionale) */
+    cursor: pointer;
+  }
+  
+  a[data-cmd]:hover {
+    color: #2e8cbf;           /* Verde acqua al passaggio */
   }
   
