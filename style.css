@@ -75,3 +75,13 @@ body {
   a:active { 
     text-decoration: none; 
   }
+
+  a.gh-link {
+    color: #2e8cbf;        /* Ciano acceso */
+    text-decoration: none; /* Nessuna sottolineatura */
+  }
+  
+  a.gh-link:hover {
+    color: #2e8cbf;        /* Colore leggermente più chiaro al passaggio */
+  }
+  
