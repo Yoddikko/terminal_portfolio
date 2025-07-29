@@ -67,11 +67,20 @@ function formatProjects(projs) {
 // -----------------------------
 // Command definitions
 // -----------------------------
+// commands marked as hidden will not show up in the help output
+const hiddenCommands = new Set(['clear', 'secret']);
+
+function helpCommand() {
+  const available = Object.keys(commands).filter(
+    c => !hiddenCommands.has(c) && c !== 'help'
+  );
+  return (
+    '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n')
+  );
+}
+
 const commands = {
-  help: () => {
-    const available = Object.keys(commands).filter(c => c !== 'clear' && c !== 'help');
-    return '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
-  },
+  help: helpCommand,
   about: data.about,
   skills: data.skills,
   projects: () => formatProjects(data.projects || []),
@@ -79,6 +88,7 @@ const commands = {
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
   linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`
+  ,secret: () => "\uD83D\uDD08 You've found the secret command!"
 };
 
 // -----------------------------
