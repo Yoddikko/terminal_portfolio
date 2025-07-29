@@ -6,18 +6,22 @@ body {
   }
   
   .terminal {
-    height: 100vh;
+    height: 100vh;            /* fallback */
+    height: 100dvh;           /* si adatta anche con la tastiera mobile */
     display: flex;
     flex-direction: column;
     padding: 1rem;
     box-sizing: border-box;
   }
   
+  /* area di output del terminale */
   #output {
     flex-grow: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     font-family: monospace;
-    white-space: pre;
+    white-space: pre-wrap;     /* consente l'andare a capo automatico */
+    word-break: break-word;    /* evita la scroll orizzontale */
     line-height: 1.2;
   }
   
@@ -25,6 +29,9 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem; /* spazio tra prompt e input */
+    position: sticky; /* resta visibile quando appare la tastiera */
+    bottom: 0;
+    background: black;
   }
   
   .input-line .prompt {
@@ -84,4 +91,16 @@ body {
   a.gh-link:hover {
     color: #2e8cbf;        /* Colore leggermente più chiaro al passaggio */
   }
-  
+
+  /* ------ Mobile adjustments ------ */
+  @media (max-width: 600px) {
+    body {
+      font-size: 0.9rem;
+    }
+    #input {
+      font-size: 0.9rem;
+    }
+    pre {
+      font-size: 0.7rem;
+    }
+  }
