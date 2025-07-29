@@ -67,9 +67,12 @@ function formatProjects(projs) {
 // -----------------------------
 // Command definitions
 // -----------------------------
+const hiddenCommands = ['segreto'];
+
 const commands = {
   help: () => {
-    const available = Object.keys(commands).filter(c => c !== 'clear' && c !== 'help');
+    const available = Object.keys(commands)
+      .filter(c => c !== 'clear' && c !== 'help' && !hiddenCommands.includes(c));
     return '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
   },
   about: data.about,
@@ -78,7 +81,8 @@ const commands = {
   experience: () => formatExperience(data.experience || []),
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`
+  linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
+  segreto: () => 'Hai trovato il comando nascosto!'
 };
 
 // -----------------------------
