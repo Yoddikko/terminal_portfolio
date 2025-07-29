@@ -1,24 +1,50 @@
+// -----------------------------
+// Elementi principali del DOM
+// -----------------------------
 const output = document.getElementById("output");
 const input = document.getElementById("input");
+// Forza lo scroll in basso nell'area di output
+function scrollToBottom() {
+  output.scrollTop = output.scrollHeight;
+}
 
+// Mantiene il focus sull'input per una digitazione continua
+function keepFocus() {
+  input.focus();
+}
+window.addEventListener("click", keepFocus);
+
+
+// -----------------------------
+// Definizione dei comandi
+// Ogni chiave corrisponde ad una funzione o ad una stringa
+// -----------------------------
 const commands = {
-  help: function () {
-    const available = Object.keys(commands).filter(cmd => cmd !== "clear" && cmd !== "help");
-    return "💡 Available commands:\n" + available.map(c => `- ${cmdLink(c)}`).join("\n");
+  help: () => {
+    const available = Object.keys(commands)
+      .filter(cmd => cmd !== "clear" && cmd !== "help");
+    return (
+      "💡 Available commands:\n" + available.map(c => `- ${cmdLink(c)}`).join("\n")
+    );
   },
-  about: "👤 Hi! I'm Alessio, a developer passionate about building terminal UIs.",
-  skills: "🛠️ Languages: JavaScript, Python, HTML/CSS\nFrameworks: React, Node.js, Express\nTools: Git, Docker, VS Code",
-  projects: "📂 Visit my GitHub or type a project name (e.g. 'project1') to get more info.",
-  experience: "💼 Software Developer @ XYZ Corp (2022–Now)\nIntern @ ABC Studio (2021)",
+  about:
+    "👤 Hi! I'm Alessio, a developer passionate about building terminal UIs.",
+  skills:
+    "🛠️ Languages: JavaScript, Python, HTML/CSS\nFrameworks: React, Node.js, Express\nTools: Git, Docker, VS Code",
+  projects:
+    "📂 Visit my GitHub or type a project name (e.g. 'project1') to get more info.",
+  experience:
+    "💼 Software Developer @ XYZ Corp (2022–Now)\nIntern @ ABC Studio (2021)",
   education: "🎓 BSc Computer Science, University of X (2018–2021)",
-  github: async function() {
-    return await githubCommand();
-  },
-  linkedin: '🔗 <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn Profile</a>',
+  github: async () => githubCommand(),
+  linkedin:
+    '🔗 <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn Profile</a>',
 };
 
-// Handle input
-input.addEventListener("keydown", async function (e) {
+// -----------------------------
+// Gestione dell'input da tastiera
+// -----------------------------
+input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const command = input.value.trim();
     runCommand(command);
@@ -27,53 +53,52 @@ input.addEventListener("keydown", async function (e) {
 
 
 async function runCommand(command) {
-    // 1. Mostra il comando digitato con prompt
-    const commandLine = document.createElement("div");
-    commandLine.classList.add("line");
-    commandLine.innerHTML = `<span class="prompt">welcome@portfolio:~$</span> ${command}`;
-    output.appendChild(commandLine);
-  
-    // 2. Resetta input
-    input.value = "";
-  
-    // 3. Attendi leggermente (effetto terminale)
-    await wait(200);
-  
-    // 4. Se il comando è 'clear', resetta l'output e mostra la welcome screen
-    if (command === "clear") {
-      output.innerHTML = "";
-      showWelcomeMessage();
-      return;
-    }
-  
-    // 5. Calcola il contenuto della risposta (può essere stringa o funzione)
-    const responseLine = document.createElement("div");
-    let result = commands[command];
-  
-    if (typeof result === "function") {
-      try {
-        result = await result();
-      } catch (err) {
-        result = `❌ Error running command: ${err.message}`;
-      }
-    }
-  
-    // 6. Mostra risultato o errore
-    if (result) {
-      responseLine.innerHTML = result.replace(/\n/g, "<br>");
-    } else {
-      responseLine.textContent = `❌ Command not found: ${command}`;
-    }
-  
-    output.appendChild(responseLine);
-  
-    // 7. Scrolla in fondo
-    setTimeout(() => {
-      document.getElementById("scroll-anchor").scrollIntoView({ behavior: "smooth" });
-    }, 30);
-  }
-  
+  // Mostra il comando appena digitato
+  const line = document.createElement("div");
+  line.classList.add("line");
+  line.innerHTML = `<span class="prompt">welcome@portfolio:~$</span> ${command}`;
+  output.appendChild(line);
 
+  // Pulisce l'input
+  input.value = "";
+
+  // Breve attesa per simulare il terminale
+  await wait(200);
+
+  // Gestione speciale del comando 'clear'
+  if (command === "clear") {
+    output.innerHTML = "";
+    showWelcomeMessage();
+    return;
+  }
+
+  // Recupera il risultato (stringa o funzione)
+  const responseLine = document.createElement("div");
+  let result = commands[command];
+
+  if (typeof result === "function") {
+    try {
+      result = await result();
+    } catch (err) {
+      result = `❌ Error running command: ${err.message}`;
+    }
+  }
+
+  // Mostra il testo ottenuto oppure l'errore
+  if (result) {
+    responseLine.innerHTML = result.replace(/\n/g, "<br>");
+  } else {
+    responseLine.textContent = `❌ Command not found: ${command}`;
+  }
+
+  output.appendChild(responseLine);
+
+  // Scroll automatico alla fine
+  scrollToBottom();
+  keepFocus();
+}
+
+// Crea il link cliccabile per il comando mostrato nei suggerimenti
 function cmdLink(cmd) {
   const icons = {
     github: `<i class="fab fa-github"></i>`,
@@ -90,7 +115,9 @@ function cmdLink(cmd) {
   return `<a href="#" data-cmd="${cmd}">${icon} ${cmd}</a>`;
 }
 
+// Messaggio di benvenuto con ASCII art e link rapidi
 function showWelcomeMessage() {
+  // evita di ristampare la schermata se già presente
   if (document.getElementById("ascii-art")) return;
 
   const pre = document.createElement("pre");
@@ -110,18 +137,22 @@ function showWelcomeMessage() {
     output.appendChild(div);
   });
 
-  document.querySelectorAll("a[data-cmd]").forEach(link => {
+  // Link nei suggerimenti eseguono direttamente il comando
+  document.querySelectorAll("a[data-cmd]").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const cmd = e.target.getAttribute("data-cmd");
       runCommand(cmd);
     });
   });
+  scrollToBottom();
 }
-
+// Mostra la schermata iniziale non appena la pagina è pronta
 window.addEventListener("DOMContentLoaded", () => {
   showWelcomeMessage();
+  keepFocus();
 });
+// Logo ASCII art da mostrare all'avvio
 
 const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___  __     ___  __     ________     
  |\\  \\  /  /||\\   __  \\ |\\   ___ \\ |\\   ___ \\ |\\  \\ |\\  \\|\\  \\  |\\  \\|\\  \\  |\\   __  \\    
@@ -134,21 +165,24 @@ const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___  
 
 `;
 
+// Utility per attendere un numero di millisecondi
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Attacca eventi click ai link con data-cmd (non usato, lasciato per estensioni)
 function attachCmdListeners() {
-    document.querySelectorAll("a[data-cmd]").forEach(link => {
-      link.onclick = (e) => {
-        e.preventDefault();
-        const cmd = e.target.getAttribute("data-cmd");
-        runCommand(cmd);
-      };
-    });
-  }
+  document.querySelectorAll("a[data-cmd]").forEach((link) => {
+    link.onclick = (e) => {
+      e.preventDefault();
+      const cmd = e.target.getAttribute("data-cmd");
+      runCommand(cmd);
+    };
+  });
+}
   
 
+// Piccola animazione "spinner" usata durante il caricamento da GitHub
 const spinnerFrames = ["|", "/", "-", "\\"];
 function startSpinner(elem) {
   let i = 0;
@@ -160,6 +194,8 @@ function startSpinner(elem) {
   return () => clearInterval(id);
 }
 
+// Recupera alcune informazioni di GitHub tramite API
+// Richiama le API di GitHub e restituisce informazioni sull'utente
 async function fetchGitHubInfo(username = "Yoddikko") {
     const userResp = await fetch(`https://api.github.com/users/${username}`);
     if (!userResp.ok) throw new Error("GitHub API error");
@@ -200,18 +236,19 @@ async function fetchGitHubInfo(username = "Yoddikko") {
   }
   
       
-  async function githubCommand() {
-    const loadingDiv = document.createElement("div");
-    loadingDiv.textContent = "Loading GitHub info ";
-    output.appendChild(loadingDiv);
-    const stop = startSpinner(loadingDiv);
-    try {
-      const info = await fetchGitHubInfo("Yoddikko");
-      stop();
-      return info;
-    } catch (err) {
-      stop();
-      return `❌ Error fetching GitHub info: ${err.message}`;
-    }
+// Comando che visualizza le informazioni GitHub usando le API
+async function githubCommand() {
+  const loadingDiv = document.createElement("div");
+  loadingDiv.textContent = "Loading GitHub info ";
+  output.appendChild(loadingDiv);
+  const stop = startSpinner(loadingDiv);
+  try {
+    const info = await fetchGitHubInfo("Yoddikko");
+    stop();
+    return info;
+  } catch (err) {
+    stop();
+    return `❌ Error fetching GitHub info: ${err.message}`;
   }
-  
+}
+
