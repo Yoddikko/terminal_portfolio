@@ -48,7 +48,59 @@ function cmdLink(cmd) {
 // -----------------------------
 // Portfolio data formatting
 // -----------------------------
-const data = window.portfolioData || {};
+let data = window.portfolioData || {};
+
+async function fetchRemoteData() {
+  try {
+    const resp = await fetch(
+      'https://raw.githubusercontent.com/Yoddikko/portfolio_database/main/portfolio.js'
+    );
+    if (!resp.ok) throw new Error('Network error');
+    const text = await resp.text();
+
+    const extract = (regex, def = '') => {
+      const m = text.match(regex);
+      return m ? m[1].trim() : def;
+    };
+
+    const aboutTitle = extract(/title:\s*"([^"]+)"/);
+    const aboutSub = extract(/subTitle:\s*emoji\("([^"]+)"\)/);
+
+    const skillBlock = extract(/skillsSection[\s\S]*?skills:\s*\[((?:.|\n)*?)\]/);
+    const skills = Array.from(skillBlock.matchAll(/emoji\("([^"]+)"\)/g))
+      .map(m => m[1])
+      .join('\n');
+
+    const projects = Array.from(
+      text.matchAll(/projectName:\s*"([^"]+)"[\s\S]*?projectDesc:\s*"([^"]+)"[\s\S]*?url:\s*"([^"]+)"/g)
+    ).map(m => ({ name: m[1], description: m[2], url: m[3] }));
+
+    const experience = Array.from(
+      text.matchAll(/role:\s*"([^"]+)"[\s\S]*?company:\s*"([^"]+)"[\s\S]*?date:\s*"([^"]+)"/g)
+    ).map(m => ({ role: m[1], company: m[2], period: m[3] }));
+
+    const education = Array.from(
+      text.matchAll(/schoolName:\s*"([^"]+)"[\s\S]*?subHeader:\s*"([^"]*)"[\s\S]*?duration:\s*"([^"]+)"/g)
+    ).map(m => ({ degree: m[2], institution: m[1], year: m[3] }));
+
+    const githubUrl = extract(/github:\s*"([^"]+)"/);
+    const linkedinUrl = extract(/linkedin:\s*"([^"]+)"/);
+    const githubUsername = githubUrl.split('/').pop();
+
+    return {
+      about: `${aboutTitle}\n${aboutSub}`,
+      skills,
+      projects,
+      experience,
+      education,
+      linkedinUrl,
+      githubUsername
+    };
+  } catch (err) {
+    console.error('Failed to fetch remote data', err);
+    return null;
+  }
+}
 
 function formatExperience(exp) {
   return exp.map(e => `- ${e.role} @ ${e.company} (${e.period})`).join('\n');
@@ -73,7 +125,7 @@ const commands = {
   help: () => {
     const available = Object.keys(commands)
       .filter(c => c !== 'clear' && c !== 'help' && !hiddenCommands.includes(c));
-    return '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
+    return '<i class="fas fa-lightbulb"></i> Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
   },
   about: data.about,
   skills: data.skills,
@@ -81,7 +133,7 @@ const commands = {
   experience: () => formatExperience(data.experience || []),
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
+  linkedin: `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
   bellaraga: () => {
     return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
   }
@@ -119,14 +171,14 @@ async function runCommand(command) {
     try {
       result = await result();
     } catch (err) {
-      result = `❌ Error running command: ${err.message}`;
+      result = `<i class="fas fa-times-circle"></i> Error running command: ${err.message}`;
     }
   }
 
   if (result) {
     responseLine.innerHTML = result.replace(/\n/g, '<br>');
   } else {
-    responseLine.textContent = `❌ Command not found: ${command}`;
+    responseLine.innerHTML = `<i class="fas fa-times-circle"></i> Command not found: ${command}`;
   }
 
   output.appendChild(responseLine);
@@ -157,7 +209,7 @@ function showWelcomeMessage() {
   output.appendChild(pre);
 
   const lines = [
-    '👋 Welcome to my terminal-style portfolio!',
+    '<i class="far fa-hand-peace"></i> Welcome to my terminal-style portfolio!',
     `Try these commands: ${cmdLink('about')}, ${cmdLink('projects')}, ${cmdLink('github')}, ${cmdLink('help')}`,
     ''
   ];
@@ -172,7 +224,12 @@ function showWelcomeMessage() {
   scrollToBottom();
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  const remote = await fetchRemoteData();
+  if (remote) {
+    data = remote;
+    window.portfolioData = remote;
+  }
   showWelcomeMessage();
   keepFocus();
 });
@@ -238,7 +295,7 @@ async function githubCommand(username = 'Yoddikko') {
     return info;
   } catch (err) {
     stop();
-    return `❌ Error fetching GitHub info: ${err.message}`;
+    return `<i class="fas fa-times-circle"></i> Error fetching GitHub info: ${err.message}`;
   }
 }
 

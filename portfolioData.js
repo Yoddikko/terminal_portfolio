@@ -1,6 +1,6 @@
 window.portfolioData = {
-  about: "\uD83D\uDC64 Hi! I'm Alessio, a developer passionate about building terminal UIs.",
-  skills: `\uD83D\uDEE0\uFE0F Languages: JavaScript, Python, HTML/CSS\nFrameworks: React, Node.js, Express\nTools: Git, Docker, VS Code`,
+  about: "Hi! I'm Alessio, a developer passionate about building terminal UIs.",
+  skills: `Languages: JavaScript, Python, HTML/CSS\nFrameworks: React, Node.js, Express\nTools: Git, Docker, VS Code`,
   projects: [
     {
       name: "project1",
