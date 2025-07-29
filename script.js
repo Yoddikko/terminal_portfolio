@@ -1,82 +1,115 @@
 // -----------------------------
-// Elementi principali del DOM
+// DOM Elements
 // -----------------------------
-const output = document.getElementById("output");
-const input = document.getElementById("input");
-// Forza lo scroll in basso nell'area di output
+const output = document.getElementById('output');
+const input = document.getElementById('input');
+
 function scrollToBottom() {
   output.scrollTop = output.scrollHeight;
 }
 
-// Mantiene il focus sull'input per una digitazione continua
 function keepFocus() {
   input.focus();
 }
-window.addEventListener("click", keepFocus);
-
+window.addEventListener('click', keepFocus);
 
 // -----------------------------
-// Definizione dei comandi
-// Ogni chiave corrisponde ad una funzione o ad una stringa
+// Utility helpers
+// -----------------------------
+function wait(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+// Attach click listeners to command links inside a container
+function attachCmdListeners(container = document) {
+  container.querySelectorAll('a[data-cmd]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      runCommand(link.getAttribute('data-cmd'));
+    });
+  });
+}
+
+function cmdLink(cmd) {
+  const icons = {
+    github: '<i class="fab fa-github"></i>',
+    linkedin: '<i class="fab fa-linkedin"></i>',
+    about: '<i class="fas fa-user"></i>',
+    projects: '<i class="fas fa-folder-open"></i>',
+    skills: '<i class="fas fa-tools"></i>',
+    experience: '<i class="fas fa-briefcase"></i>',
+    education: '<i class="fas fa-graduation-cap"></i>',
+    help: '<i class="fas fa-question-circle"></i>'
+  };
+  const icon = icons[cmd] || '<i class="fas fa-terminal"></i>';
+  return `<a href="#" data-cmd="${cmd}">${icon} ${cmd}</a>`;
+}
+
+// -----------------------------
+// Portfolio data formatting
+// -----------------------------
+const data = window.portfolioData || {};
+
+function formatExperience(exp) {
+  return exp.map(e => `- ${e.role} @ ${e.company} (${e.period})`).join('\n');
+}
+
+function formatEducation(edu) {
+  return edu.map(e => `- ${e.degree}, ${e.institution} (${e.year})`).join('\n');
+}
+
+function formatProjects(projs) {
+  return projs
+    .map(p => `- <a href="${p.url}" target="_blank">${p.name}</a>: ${p.description}`)
+    .join('\n');
+}
+
+// -----------------------------
+// Command definitions
 // -----------------------------
 const commands = {
   help: () => {
-    const available = Object.keys(commands)
-      .filter(cmd => cmd !== "clear" && cmd !== "help");
-    return (
-      "💡 Available commands:\n" + available.map(c => `- ${cmdLink(c)}`).join("\n")
-    );
+    const available = Object.keys(commands).filter(c => c !== 'clear' && c !== 'help');
+    return '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
   },
-  about:
-    "👤 Hi! I'm Alessio, a developer passionate about building terminal UIs.",
-  skills:
-    "🛠️ Languages: JavaScript, Python, HTML/CSS\nFrameworks: React, Node.js, Express\nTools: Git, Docker, VS Code",
-  projects:
-    "📂 Visit my GitHub or type a project name (e.g. 'project1') to get more info.",
-  experience:
-    "💼 Software Developer @ XYZ Corp (2022–Now)\nIntern @ ABC Studio (2021)",
-  education: "🎓 BSc Computer Science, University of X (2018–2021)",
-  github: async () => githubCommand(),
-  linkedin:
-    '🔗 <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn Profile</a>',
+  about: data.about,
+  skills: data.skills,
+  projects: () => formatProjects(data.projects || []),
+  experience: () => formatExperience(data.experience || []),
+  education: () => formatEducation(data.education || []),
+  github: () => githubCommand(data.githubUsername),
+  linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`
 };
 
 // -----------------------------
-// Gestione dell'input da tastiera
+// Command execution
 // -----------------------------
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    const command = input.value.trim();
-    runCommand(command);
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const cmd = input.value.trim();
+    runCommand(cmd);
   }
 });
 
-
 async function runCommand(command) {
-  // Mostra il comando appena digitato
-  const line = document.createElement("div");
-  line.classList.add("line");
+  const line = document.createElement('div');
+  line.classList.add('line');
   line.innerHTML = `<span class="prompt">welcome@portfolio:~$</span> ${command}`;
   output.appendChild(line);
 
-  // Pulisce l'input
-  input.value = "";
-
-  // Breve attesa per simulare il terminale
+  input.value = '';
   await wait(200);
 
-  // Gestione speciale del comando 'clear'
-  if (command === "clear") {
-    output.innerHTML = "";
+  if (command === 'clear') {
+    output.innerHTML = '';
     showWelcomeMessage();
     return;
   }
 
-  // Recupera il risultato (stringa o funzione)
-  const responseLine = document.createElement("div");
+  const responseLine = document.createElement('div');
   let result = commands[command];
 
-  if (typeof result === "function") {
+  if (typeof result === 'function') {
     try {
       result = await result();
     } catch (err) {
@@ -84,106 +117,64 @@ async function runCommand(command) {
     }
   }
 
-  // Mostra il testo ottenuto oppure l'errore
   if (result) {
-    responseLine.innerHTML = result.replace(/\n/g, "<br>");
+    responseLine.innerHTML = result.replace(/\n/g, '<br>');
   } else {
     responseLine.textContent = `❌ Command not found: ${command}`;
   }
 
   output.appendChild(responseLine);
-
-  // Scroll automatico alla fine
+  attachCmdListeners(responseLine);
   scrollToBottom();
   keepFocus();
 }
 
-// Crea il link cliccabile per il comando mostrato nei suggerimenti
-function cmdLink(cmd) {
-  const icons = {
-    github: `<i class="fab fa-github"></i>`,
-    linkedin: `<i class="fab fa-linkedin"></i>`,
-    about: `<i class="fas fa-user"></i>`,
-    projects: `<i class="fas fa-folder-open"></i>`,
-    skills: `<i class="fas fa-tools"></i>`,
-    experience: `<i class="fas fa-briefcase"></i>`,
-    education: `<i class="fas fa-graduation-cap"></i>`,
-    help: `<i class="fas fa-question-circle"></i>`,
-  };
+// -----------------------------
+// Welcome message and ASCII art
+// -----------------------------
+const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___
+__     ___  __     ________
+ |\\  \\  /  /||\\   __  \\ |\\   ___ \\ |\\   ___ \\ |\\  \\ |\\  \\|\\  \\  |\\  \\|\\  \\  |\\   __  \\
+ \\ \\  \\/  / /\\ \\  \\|\\  \\\\ \\  \\_|\\ \\\\ \\  \\_|\\ \\\\ \\  \\\\ \\/  /|_\\ \\  \\/  /|_\\ \\  \\|\\  \\
+  \\ \\    / /  \\ \\  \\\\\\  \\\\ \\  \\ \\\\ \\\\ \\  \\ \\\\ \\\\ \\  \\\\ \   ___  \\\\ \\   ___  \\\\ \\  \\\\\\  \\
+   \\/  /  /    \\ \\  \\\\\\  \\\\ \\  \\_\\\\ \\\\ \\  \\_\\\\ \\\\ \\  \\\\ \  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\\\  \\
+ __/  / /       \\ \\_______\\\\ \\_______\\\\ \\_______\\\\ \\__\\\\ \\__\\\\ \__\\\\ \\__\\\\ \\__\\\\ \\_______\\
+|\\___/ /         \\|_______| \\|_______| \\|_______| \\|__| \\|__| \\|__| \\|__| | \\|__| \\|_______|  v0.0.1
+\\|___|/`;
 
-  const icon = icons[cmd] || `<i class="fas fa-terminal"></i>`;
-  return `<a href="#" data-cmd="${cmd}">${icon} ${cmd}</a>`;
-}
-
-// Messaggio di benvenuto con ASCII art e link rapidi
 function showWelcomeMessage() {
-  // evita di ristampare la schermata se già presente
-  if (document.getElementById("ascii-art")) return;
+  if (document.getElementById('ascii-art')) return;
 
-  const pre = document.createElement("pre");
+  const pre = document.createElement('pre');
   pre.textContent = asciiArtName;
-  pre.id = "ascii-art";
+  pre.id = 'ascii-art';
   output.appendChild(pre);
 
   const lines = [
-    "👋 Welcome to my terminal-style portfolio!",
-    `Try these commands: ${cmdLink("about")}, ${cmdLink("projects")}, ${cmdLink("github")}, ${cmdLink("help")}`,
-    "",
+    '👋 Welcome to my terminal-style portfolio!',
+    `Try these commands: ${cmdLink('about')}, ${cmdLink('projects')}, ${cmdLink('github')}, ${cmdLink('help')}`,
+    ''
   ];
 
-  lines.forEach((line) => {
-    const div = document.createElement("div");
+  lines.forEach(line => {
+    const div = document.createElement('div');
     div.innerHTML = line;
     output.appendChild(div);
   });
 
-  // Link nei suggerimenti eseguono direttamente il comando
-  document.querySelectorAll("a[data-cmd]").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const cmd = e.target.getAttribute("data-cmd");
-      runCommand(cmd);
-    });
-  });
+  attachCmdListeners(output);
   scrollToBottom();
 }
-// Mostra la schermata iniziale non appena la pagina è pronta
-window.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener('DOMContentLoaded', () => {
   showWelcomeMessage();
   keepFocus();
 });
-// Logo ASCII art da mostrare all'avvio
 
-const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___  __     ___  __     ________     
- |\\  \\  /  /||\\   __  \\ |\\   ___ \\ |\\   ___ \\ |\\  \\ |\\  \\|\\  \\  |\\  \\|\\  \\  |\\   __  \\    
- \\ \\  \\/  / /\\ \\  \\|\\  \\\\ \\  \\_|\\ \\\\ \\  \\_|\\ \\\\ \\  \\\\ \\  \\/  /|_\\ \\  \\/  /|_\\ \\  \\|\\  \\   
-  \\ \\    / /  \\ \\  \\\\\\  \\\\ \\  \\ \\\\ \\\\ \\  \\ \\\\ \\\\ \\  \\\\ \\   ___  \\\\ \\   ___  \\\\ \\  \\\\\\  \\  
-   \\/  /  /    \\ \\  \\\\\\  \\\\ \\  \\_\\\\ \\\\ \\  \\_\\\\ \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\\\  \\ 
- __/  / /       \\ \\_______\\\\ \\_______\\\\ \\_______\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\_______\\
-|\\___/ /         \\|_______| \\|_______| \\|_______| \\|__| \\|__| \\|__| \\|__| \\|__| \\|_______|  v0.0.1
-\\|___|/                                                                                   
-
-`;
-
-// Utility per attendere un numero di millisecondi
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Attacca eventi click ai link con data-cmd (non usato, lasciato per estensioni)
-function attachCmdListeners() {
-  document.querySelectorAll("a[data-cmd]").forEach((link) => {
-    link.onclick = (e) => {
-      e.preventDefault();
-      const cmd = e.target.getAttribute("data-cmd");
-      runCommand(cmd);
-    };
-  });
-}
-  
-
-// Piccola animazione "spinner" usata durante il caricamento da GitHub
-const spinnerFrames = ["|", "/", "-", "\\"];
+// -----------------------------
+// GitHub API logic
+// -----------------------------
+const spinnerFrames = ['|', '/', '-', '\\'];
 function startSpinner(elem) {
   let i = 0;
   elem.textContent = spinnerFrames[i++];
@@ -194,56 +185,49 @@ function startSpinner(elem) {
   return () => clearInterval(id);
 }
 
-// Recupera alcune informazioni di GitHub tramite API
-// Richiama le API di GitHub e restituisce informazioni sull'utente
-async function fetchGitHubInfo(username = "Yoddikko") {
-    const userResp = await fetch(`https://api.github.com/users/${username}`);
-    if (!userResp.ok) throw new Error("GitHub API error");
-  
-    const user = await userResp.json();
-    const reposResp = await fetch(`${user.repos_url}?per_page=100`);
-    const repos = await reposResp.json();
-  
-    const totalStars = repos.reduce((sum, r) => sum + r.stargazers_count, 0);
-    const topRepos = repos
-      .filter(r => !r.fork)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
-      .slice(0, 3);
-  
-    const icon = {
-      user: `<i class="fas fa-user"></i>`,
-      star: `<i class="fas fa-star" style="color:yellow;"></i>`,
-      repo: `<i class="fas fa-folder-open"></i>`,
-      followers: `<i class="fas fa-users"></i>`,
-    };
-  
-    const cyanLink = (url, text) =>
-      `<a href="${url}" target="_blank" class="gh-link">${text}</a>`;
-    const gray = txt => `<span style="color:gray;">${txt}</span>`;
-  
-    let output = `${icon.user} ${cyanLink(user.html_url, user.login)} | ${icon.followers} ${user.followers} followers<br>`;
-    output += `${icon.star} Total stars: ${totalStars}<br>`;
-    output += `${icon.repo} Top repos:<br>`;
-  
-    topRepos.forEach(repo => {
-      output += ` - ${cyanLink(repo.html_url, repo.name)} ${icon.star} ${repo.stargazers_count}<br>`;
-      if (repo.description) {
-        output += `${gray("   " + repo.description)}<br>`;
-      }
-    });
-  
-    return output;
-  }
-  
-      
-// Comando che visualizza le informazioni GitHub usando le API
-async function githubCommand() {
-  const loadingDiv = document.createElement("div");
-  loadingDiv.textContent = "Loading GitHub info ";
+async function fetchGitHubInfo(username) {
+  const userResp = await fetch(`https://api.github.com/users/${username}`);
+  if (!userResp.ok) throw new Error('GitHub API error');
+
+  const user = await userResp.json();
+  const reposResp = await fetch(`${user.repos_url}?per_page=100`);
+  const repos = await reposResp.json();
+
+  const totalStars = repos.reduce((sum, r) => sum + r.stargazers_count, 0);
+  const topRepos = repos
+    .filter(r => !r.fork)
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .slice(0, 3);
+
+  const icon = {
+    user: '<i class="fas fa-user"></i>',
+    star: '<i class="fas fa-star" style="color:yellow;"></i>',
+    repo: '<i class="fas fa-folder-open"></i>',
+    followers: '<i class="fas fa-users"></i>'
+  };
+
+  const link = (url, text) => `<a href="${url}" target="_blank" class="gh-link">${text}</a>`;
+  const gray = txt => `<span style="color:gray;">${txt}</span>`;
+
+  let out = `${icon.user} ${link(user.html_url, user.login)} | ${icon.followers} ${user.followers} followers<br>`;
+  out += `${icon.star} Total stars: ${totalStars}<br>`;
+  out += `${icon.repo} Top repos:<br>`;
+
+  topRepos.forEach(repo => {
+    out += ` - ${link(repo.html_url, repo.name)} ${icon.star} ${repo.stargazers_count}<br>`;
+    if (repo.description) out += `${gray('   ' + repo.description)}<br>`;
+  });
+
+  return out;
+}
+
+async function githubCommand(username = 'Yoddikko') {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.textContent = 'Loading GitHub info ';
   output.appendChild(loadingDiv);
   const stop = startSpinner(loadingDiv);
   try {
-    const info = await fetchGitHubInfo("Yoddikko");
+    const info = await fetchGitHubInfo(username);
     stop();
     return info;
   } catch (err) {
