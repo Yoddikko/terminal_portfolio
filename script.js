@@ -67,7 +67,7 @@ function formatProjects(projs) {
 // -----------------------------
 // Command definitions
 // -----------------------------
-const hiddenCommands = ['segreto'];
+const hiddenCommands = ['bellaraga'];
 
 const commands = {
   help: () => {
@@ -82,8 +82,10 @@ const commands = {
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
   linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
-  segreto: () => 'Hai trovato il comando nascosto!'
-};
+  bellaraga: () => {
+    return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
+  }
+  };
 
 // -----------------------------
 // Command execution
@@ -136,16 +138,16 @@ async function runCommand(command) {
 // -----------------------------
 // Welcome message and ASCII art
 // -----------------------------
-const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___
-__     ___  __     ________
- |\\  \\  /  /||\\   __  \\ |\\   ___ \\ |\\   ___ \\ |\\  \\ |\\  \\|\\  \\  |\\  \\|\\  \\  |\\   __  \\
- \\ \\  \\/  / /\\ \\  \\|\\  \\\\ \\  \\_|\\ \\\\ \\  \\_|\\ \\\\ \\  \\\\ \\/  /|_\\ \\  \\/  /|_\\ \\  \\|\\  \\
-  \\ \\    / /  \\ \\  \\\\\\  \\\\ \\  \\ \\\\ \\\\ \\  \\ \\\\ \\\\ \\  \\\\ \   ___  \\\\ \\   ___  \\\\ \\  \\\\\\  \\
-   \\/  /  /    \\ \\  \\\\\\  \\\\ \\  \\_\\\\ \\\\ \\  \\_\\\\ \\\\ \\  \\\\ \  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\\\  \\
- __/  / /       \\ \\_______\\\\ \\_______\\\\ \\_______\\\\ \\__\\\\ \\__\\\\ \__\\\\ \\__\\\\ \\__\\\\ \\_______\\
-|\\___/ /         \\|_______| \\|_______| \\|_______| \\|__| \\|__| \\|__| \\|__| | \\|__| \\|_______|  v0.0.1
-\\|___|/`;
+const asciiArtName = `  ___    ___  ________   ________   ________   ___   ___  __     ___  __     ________     
+ |\\  \\  /  /||\\   __  \\ |\\   ___ \\ |\\   ___ \\ |\\  \\ |\\  \\|\\  \\  |\\  \\|\\  \\  |\\   __  \\    
+ \\ \\  \\/  / /\\ \\  \\|\\  \\\\ \\  \\_|\\ \\\\ \\  \\_|\\ \\\\ \\  \\\\ \\  \\/  /|_\\ \\  \\/  /|_\\ \\  \\|\\  \\   
+  \\ \\    / /  \\ \\  \\\\\\  \\\\ \\  \\ \\\\ \\\\ \\  \\ \\\\ \\\\ \\  \\\\ \\   ___  \\\\ \\   ___  \\\\ \\  \\\\\\  \\  
+   \\/  /  /    \\ \\  \\\\\\  \\\\ \\  \\_\\\\ \\\\ \\  \\_\\\\ \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\ \\  \\\\\\  \\ 
+ __/  / /       \\ \\_______\\\\ \\_______\\\\ \\_______\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\__\\\\ \\_______\\
+|\\___/ /         \\|_______| \\|_______| \\|_______| \\|__| \\|__| \\|__| \\|__| \\|__| \\|_______|  v0.0.1
+\\|___|/                                                                                   
 
+`;
 function showWelcomeMessage() {
   if (document.getElementById('ascii-art')) return;
 
@@ -201,7 +203,7 @@ async function fetchGitHubInfo(username) {
   const topRepos = repos
     .filter(r => !r.fork)
     .sort((a, b) => b.stargazers_count - a.stargazers_count)
-    .slice(0, 3);
+    .slice(0, 4);
 
   const icon = {
     user: '<i class="fas fa-user"></i>',
@@ -213,7 +215,7 @@ async function fetchGitHubInfo(username) {
   const link = (url, text) => `<a href="${url}" target="_blank" class="gh-link">${text}</a>`;
   const gray = txt => `<span style="color:gray;">${txt}</span>`;
 
-  let out = `${icon.user} ${link(user.html_url, user.login)} | ${icon.followers} ${user.followers} followers<br>`;
+  let out = `${link(user.html_url, `${icon.user} ${user.login}`)} | ${icon.followers} ${user.followers} followers<br>`;
   out += `${icon.star} Total stars: ${totalStars}<br>`;
   out += `${icon.repo} Top repos:<br>`;
 
