@@ -61,13 +61,13 @@ body {
   }
   
   a[data-cmd] {
-    color: #2e8cbf;           /* Verde brillante */
-    text-decoration: underline;  /* Sottolineato (opzionale) */
+    color: #2e8cbf;           
+    text-decoration: underline;  
     cursor: pointer;
   }
   
   a[data-cmd]:hover {
-    color: #2e8cbf;           /* Verde acqua al passaggio */
+    color: #2e8cbf;         
   }
   
   a:link { 

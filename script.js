@@ -127,7 +127,7 @@ function formatEducation(edu) {
 
 function formatProjects(projs) {
   return projs
-    .map(p => `- <a href="${p.url}" target="_blank">${p.name}</a>: ${p.description}`)
+    .map(p => `- <a href="${p.url}" target="_blank" class="gh-link">${p.name}</a>: ${p.description}`)
     .join('\n');
 }
 
@@ -149,7 +149,7 @@ const commands = {
   experience: () => formatExperience(data.experience || []),
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: () => `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
+  linkedin: () => `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank" class="gh-link">LinkedIn Profile</a>`,
   bellaraga: () => {
     return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
   }
