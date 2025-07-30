@@ -48,7 +48,74 @@ function cmdLink(cmd) {
 // -----------------------------
 // Portfolio data formatting
 // -----------------------------
-const data = window.portfolioData || {};
+const DATA_URL =
+  'https://raw.githubusercontent.com/Yoddikko/portfolio_database/main/Portfolio.json';
+
+const data = {};
+
+function mapSkillBullet(bullet) {
+  const mappings = {
+    '⚡': 'bolt',
+    '🤖': 'robot',
+    '🛸': 'rocket'
+  };
+  const iconKey = Object.keys(mappings).find(e => bullet.trim().startsWith(e));
+  const icon = iconKey
+    ? `<i class="fas fa-${mappings[iconKey]}"></i>`
+    : '<i class="fas fa-check"></i>';
+  return `${icon} ${bullet.replace(iconKey, '').trim()}`;
+}
+
+function transformPortfolio(json) {
+  const skillsText = (json.skillsSection.skills || [])
+    .map(mapSkillBullet)
+    .join('\n');
+
+  const projects = (json.bigProjects.projects || []).map(p => ({
+    name: p.projectName,
+    description: p.projectDesc,
+    url: p.footerLink && p.footerLink[0] ? p.footerLink[0].url : '#'
+  }));
+
+  const experience = (json.workExperiences.experience || []).map(e => ({
+    role: e.role,
+    company: e.company,
+    period: e.date,
+    description: e.desc
+  }));
+
+  const education = (json.educationInfo.schools || []).map(e => ({
+    degree: e.subHeader || '',
+    institution: e.schoolName,
+    year: e.duration
+  }));
+
+  return {
+    about: `<i class="fas fa-user"></i> ${json.greeting.title}. ${json.greeting.subTitle.replace('🚀', '').trim()}`,
+    skills: skillsText,
+    projects,
+    experience,
+    education,
+    linkedinUrl: json.socialMediaLinks.linkedin,
+    githubUsername: (json.socialMediaLinks.github || '').split('github.com/').pop()
+  };
+}
+
+async function loadPortfolioData() {
+  try {
+    const resp = await fetch(DATA_URL);
+    if (!resp.ok) throw new Error('fetch error');
+    const json = await resp.json();
+    const mapped = transformPortfolio(json);
+    Object.assign(data, mapped);
+    window.workExperience = mapped.experience;
+    window.projectList = mapped.projects;
+    window.educationList = mapped.education;
+    window.skillList = json.skillsSection.softwareSkills || [];
+  } catch (err) {
+    console.error('Failed to load portfolio data', err);
+  }
+}
 
 function formatExperience(exp) {
   return exp.map(e => `- ${e.role} @ ${e.company} (${e.period})`).join('\n');
@@ -73,19 +140,20 @@ const commands = {
   help: () => {
     const available = Object.keys(commands)
       .filter(c => c !== 'clear' && c !== 'help' && !hiddenCommands.includes(c));
-    return '💡 Available commands:\n' + available.map(c => `- ${cmdLink(c)}`).join('\n');
+    return `<i class="fas fa-lightbulb"></i> Available commands:\n` +
+      available.map(c => `- ${cmdLink(c)}`).join('\n');
   },
-  about: data.about,
-  skills: data.skills,
+  about: () => data.about || '',
+  skills: () => data.skills || '',
   projects: () => formatProjects(data.projects || []),
   experience: () => formatExperience(data.experience || []),
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: `🔗 <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
+  linkedin: () => `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank">LinkedIn Profile</a>`,
   bellaraga: () => {
     return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
   }
-  };
+};
 
 // -----------------------------
 // Command execution
@@ -119,14 +187,14 @@ async function runCommand(command) {
     try {
       result = await result();
     } catch (err) {
-      result = `❌ Error running command: ${err.message}`;
+      result = `<i class="fas fa-times-circle"></i> Error running command: ${err.message}`;
     }
   }
 
   if (result) {
     responseLine.innerHTML = result.replace(/\n/g, '<br>');
   } else {
-    responseLine.textContent = `❌ Command not found: ${command}`;
+    responseLine.innerHTML = `<i class="fas fa-times-circle"></i> Command not found: ${command}`;
   }
 
   output.appendChild(responseLine);
@@ -157,7 +225,7 @@ function showWelcomeMessage() {
   output.appendChild(pre);
 
   const lines = [
-    '👋 Welcome to my terminal-style portfolio!',
+    '<i class="fas fa-hand-peace"></i> Welcome to my terminal-style portfolio!',
     `Try these commands: ${cmdLink('about')}, ${cmdLink('projects')}, ${cmdLink('github')}, ${cmdLink('help')}`,
     ''
   ];
@@ -172,7 +240,8 @@ function showWelcomeMessage() {
   scrollToBottom();
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadPortfolioData();
   showWelcomeMessage();
   keepFocus();
 });
@@ -238,7 +307,7 @@ async function githubCommand(username = 'Yoddikko') {
     return info;
   } catch (err) {
     stop();
-    return `❌ Error fetching GitHub info: ${err.message}`;
+    return `<i class="fas fa-times-circle"></i> Error fetching GitHub info: ${err.message}`;
   }
 }
 
