@@ -30,6 +30,16 @@ function attachCmdListeners(container = document) {
   });
 }
 
+function triggerDownload(url, filename) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 function cmdLink(cmd) {
   const icons = {
     github: '<i class="fab fa-github"></i>',
@@ -48,8 +58,10 @@ function cmdLink(cmd) {
 // -----------------------------
 // Portfolio data formatting
 // -----------------------------
-const DATA_URL =
-  'https://raw.githubusercontent.com/Yoddikko/portfolio_database/main/Portfolio.json';
+const DB_BASE_URL =
+  'https://raw.githubusercontent.com/Yoddikko/portfolio_database/main/';
+const DATA_URL = `${DB_BASE_URL}Portfolio.json`;
+const CV_URL = `${DB_BASE_URL}CV.pdf`;
 
 const data = {};
 
@@ -150,6 +162,10 @@ const commands = {
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
   linkedin: () => `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank" class="gh-link">LinkedIn Profile</a>`,
+  curriculum: () => {
+    triggerDownload(CV_URL, 'cv.pdf');
+    return `<i class="fas fa-file-pdf"></i> Downloading <a href="${CV_URL}" target="_blank" class="gh-link">cv.pdf</a>`;
+  },
   bellaraga: () => {
     return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
   }
