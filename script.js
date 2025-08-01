@@ -49,7 +49,8 @@ function cmdLink(cmd) {
     skills: '<i class="fas fa-tools"></i>',
     experience: '<i class="fas fa-briefcase"></i>',
     education: '<i class="fas fa-graduation-cap"></i>',
-    help: '<i class="fas fa-question-circle"></i>'
+    help: '<i class="fas fa-question-circle"></i>',
+    curriculum: '<i class="fas fa-file"></i>'
   };
   const icon = icons[cmd] || '<i class="fas fa-terminal"></i>';
   return `<a href="#" data-cmd="${cmd}">${icon} ${cmd}</a>`;
@@ -129,8 +130,15 @@ async function loadPortfolioData() {
   }
 }
 
-function formatExperience(exp) {
-  return exp.map(e => `- ${e.role} @ ${e.company} (${e.period})`).join('\n');
+function formatExperience(experiences) {
+  return experiences.map(exp => {
+    return [
+      `<span style="color:#4CAF50;">- Role:</span> <strong>${exp.role}</strong>`,
+      `<span style="color:#4CAF50;">  Company:</span> ${exp.company}`,
+      `<span style="color:#4CAF50;">  Period:</span> ${exp.period}`,
+      `<span style="color:#4CAF50;">  Details:</span> ${exp.description}`
+    ].join('<br>');
+  }).join('<br><br>');
 }
 
 function formatEducation(edu) {
@@ -161,10 +169,10 @@ const commands = {
   experience: () => formatExperience(data.experience || []),
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: () => `<i class="fas fa-link"></i> <a href="${data.linkedinUrl}" target="_blank" class="gh-link">LinkedIn Profile</a>`,
+  linkedin: () => ` <a href="${data.linkedinUrl}" <i class="fas fa-link"></i>target="_blank" class="gh-link">LinkedIn Profile</a>`,
   curriculum: () => {
     triggerDownload(CV_URL, 'cv.pdf');
-    return `<i class="fas fa-file-pdf"></i> Downloading <a href="${CV_URL}" target="_blank" class="gh-link">cv.pdf</a>`;
+    return `<i class="fas fa-paperclip"></i> Downloading <a href="${CV_URL}" target="_blank" class="gh-link">cv.pdf</a>`;
   },
   bellaraga: () => {
     return `<img src="assets/bellaraga.png" alt="bellaraga" style="width: 300px; max-width: 100%; image-rendering: pixelated;">`;
