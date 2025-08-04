@@ -3,7 +3,7 @@ body {
     font-family: monospace;
     background: black;
     color: #33ff33;
-    text-shadow: 0 0 5px #33ff33;
+    text-shadow: 0 0 2px currentColor;
   }
 
 body::before {
@@ -89,18 +89,22 @@ body::before {
   }
   
   a[data-cmd] {
-    color: #2e8cbf;           
-    text-decoration: underline;  
+    color: #2e8cbf;
+    text-decoration: underline;
     cursor: pointer;
   }
-  
+
   a[data-cmd]:hover {
-    color: #2e8cbf;         
+    color: #2e8cbf;
   }
-  
-  a:link { 
-    text-decoration: none; 
-  } 
+
+  a {
+    text-shadow: 0 0 2px currentColor;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
   a:visited { 
     text-decoration: none; 
   } 
