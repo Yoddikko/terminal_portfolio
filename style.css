@@ -3,6 +3,34 @@ body {
     font-family: monospace;
     background: black;
     color: #33ff33;
+    text-shadow: 0 0 2px currentColor;
+  }
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            rgba(255, 255, 255, 0.02) 0px,
+            rgba(255, 255, 255, 0.02) 2px,
+            rgba(0, 0, 0, 0) 2px,
+            rgba(0, 0, 0, 0) 4px
+        ),
+        radial-gradient(circle at center, rgba(0, 255, 0, 0.1), rgba(0, 0, 0, 0.7));
+    mix-blend-mode: screen;
+    animation: flicker 0.15s infinite;
+    z-index: 9999;
+  }
+
+@keyframes flicker {
+    0% { opacity: 0.98; }
+    50% { opacity: 1; }
+    100% { opacity: 0.99; }
   }
   
   .terminal {
@@ -61,18 +89,22 @@ body {
   }
   
   a[data-cmd] {
-    color: #2e8cbf;           
-    text-decoration: underline;  
+    color: #2e8cbf;
+    text-decoration: underline;
     cursor: pointer;
   }
-  
+
   a[data-cmd]:hover {
-    color: #2e8cbf;         
+    color: #2e8cbf;
   }
-  
-  a:link { 
-    text-decoration: none; 
-  } 
+
+  a {
+    text-shadow: 0 0 2px currentColor;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
   a:visited { 
     text-decoration: none; 
   } 
