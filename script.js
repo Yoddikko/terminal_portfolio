@@ -3,6 +3,7 @@
 // -----------------------------
 const output = document.getElementById('output');
 const input = document.getElementById('input');
+const cursor = document.querySelector('.cursor');
 
 function scrollToBottom() {
   output.scrollTop = output.scrollHeight;
@@ -12,6 +13,32 @@ function keepFocus() {
   input.focus();
 }
 window.addEventListener('click', keepFocus);
+
+// Update cursor position
+function updateCursor() {
+  const span = document.createElement('span');
+  span.style.visibility = 'hidden';
+  span.style.position = 'absolute';
+  span.style.font = window.getComputedStyle(input).font;
+  span.textContent = input.value || '';
+  document.body.appendChild(span);
+  
+  const promptWidth = document.querySelector('.input-line .prompt').offsetWidth;
+  const gapWidth = 8; // 0.5rem gap
+  const textWidth = span.offsetWidth;
+  
+  document.body.removeChild(span);
+  
+  cursor.style.left = (promptWidth + gapWidth + textWidth) + 'px';
+}
+
+input.addEventListener('input', updateCursor);
+input.addEventListener('keydown', () => setTimeout(updateCursor, 0));
+input.addEventListener('keyup', () => setTimeout(updateCursor, 0));
+input.addEventListener('click', updateCursor);
+
+// Initialize cursor position
+updateCursor();
 
 // -----------------------------
 // Utility helpers
@@ -50,7 +77,8 @@ function cmdLink(cmd) {
     experience: '<i class="fas fa-briefcase"></i>',
     education: '<i class="fas fa-graduation-cap"></i>',
     help: '<i class="fas fa-question-circle"></i>',
-    curriculum: '<i class="fas fa-file"></i>'
+    curriculum: '<i class="fas fa-file"></i>',
+    contact: '<i class="fas fa-envelope"></i>'
   };
   const icon = icons[cmd] || '<i class="fas fa-terminal"></i>';
   return `<a href="#" data-cmd="${cmd}">${icon} ${cmd}</a>`;
@@ -170,6 +198,7 @@ const commands = {
   education: () => formatEducation(data.education || []),
   github: () => githubCommand(data.githubUsername),
   linkedin: () => ` <a href="${data.linkedinUrl}" <i class="fas fa-link"></i>target="_blank" class="gh-link">LinkedIn Profile</a>`,
+  contact: () => `<i class="fas fa-envelope"></i> Email: <a href="mailto:alessioiodiceuni@gmail.com" class="gh-link">alessioiodiceuni@gmail.com</a>`,
   curriculum: () => {
     triggerDownload(CV_URL, 'cv.pdf');
     return `<i class="fas fa-paperclip"></i> Downloading <a href="${CV_URL}" target="_blank" class="gh-link">cv.pdf</a>`;
@@ -194,15 +223,18 @@ async function runCommand(command) {
   line.classList.add('line');
   line.innerHTML = `<span class="prompt">welcome@portfolio:~$</span> ${command}`;
   output.appendChild(line);
+  scrollToBottom(); // Scroll dopo aver aggiunto il comando
 
   input.value = '';
-  await wait(200);
+  updateCursor();
 
   if (command === 'clear') {
     output.innerHTML = '';
     showWelcomeMessage();
     return;
   }
+
+  await wait(500); // Ritardo di 0.5 secondi prima della risposta
 
   const responseLine = document.createElement('div');
   let result = commands[command];
@@ -223,7 +255,12 @@ async function runCommand(command) {
 
   output.appendChild(responseLine);
   attachCmdListeners(responseLine);
-  scrollToBottom();
+  
+  // Piccolo delay per assicurarsi che il DOM sia aggiornato prima dello scroll
+  setTimeout(() => {
+    scrollToBottom();
+  }, 50);
+  
   keepFocus();
 }
 
