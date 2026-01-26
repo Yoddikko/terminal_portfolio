@@ -4,6 +4,7 @@ body {
     background: black;
     color: #33ff33;
     text-shadow: 0 0 2px currentColor;
+    font-size: 1rem;
   }
 
 body::before {
@@ -24,7 +25,7 @@ body::before {
         radial-gradient(circle at center, rgba(0, 255, 0, 0.1), rgba(0, 0, 0, 0.7));
     mix-blend-mode: screen;
     animation: flicker 0.15s infinite;
-    z-index: 9999;
+    z-index: 1;
   }
 
 @keyframes flicker {
@@ -52,6 +53,17 @@ body::before {
     word-break: break-word;    /* evita la scroll orizzontale */
     line-height: 1.2;
   }
+
+  /* Risposte del terminale - verde più scuro */
+  #output > div:not(.line),
+  #output > pre {
+    color: #28a428;
+  }
+  
+  /* ASCII art mantiene il colore originale */
+  #output > pre#ascii-art {
+    color: #33ff33;
+  }
   
   .input-line {
     display: flex;
@@ -60,6 +72,7 @@ body::before {
     position: sticky; /* resta visibile quando appare la tastiera */
     bottom: 0;
     background: black;
+    position: relative; /* per posizionare il cursore */
   }
   
   .input-line .prompt {
@@ -68,24 +81,51 @@ body::before {
   
   #input {
     flex-grow: 1; /* occupa il resto dello spazio disponibile */
-    background: black;
-    color: #33ff33;
+    background: black !important;
+    color: #33ff33 !important;
     border: none;
     outline: none;
     font-family: monospace;
-    font-size: 1rem;
+    font-size: inherit;
+    caret-color: transparent; /* nasconde il cursore normale */
+  }
+
+  /* Cursore a blocco stile terminale anni '90 */
+  .cursor {
+    position: absolute;
+    width: 0.6em;
+    height: 1em;
+    background: #33ff33;
+    animation: blink 1s step-end infinite;
+    pointer-events: none;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    transition: left 0.05s;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
   }
     
   .prompt {
     color: #33ff33;
   }
+
+  /* Linea del comando inviato - verde brillante */
+  .line {
+    color: #33ff33;
+  }
   
   pre {
     font-family: monospace;
-    font-size: 0.8rem;
+    font-size: clamp(0.25rem, 1.5vw, 1.2rem);
     margin: 0;
     padding: 0;
     line-height: 1.1;
+    overflow-x: auto;
+    max-width: 100%;
   }
   
   a[data-cmd] {
@@ -131,8 +171,5 @@ body::before {
     }
     #input {
       font-size: 0.9rem;
-    }
-    pre {
-      font-size: 0.7rem;
     }
   }
