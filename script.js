@@ -170,7 +170,13 @@ function formatExperience(experiences) {
 }
 
 function formatEducation(edu) {
-  return edu.map(e => `- ${e.degree}, ${e.institution} (${e.year})`).join('\n');
+  return edu.map(e => {
+    if (e.degree && e.degree.trim()) {
+      return `- ${e.degree}, ${e.institution} (${e.year})`;
+    } else {
+      return `- ${e.institution} (${e.year})`;
+    }
+  }).join('\n');
 }
 
 function formatProjects(projs) {
