@@ -14,6 +14,37 @@ function keepFocus() {
 }
 window.addEventListener('click', keepFocus);
 
+// Mouse glow effect
+let mouseGlow = null;
+
+function createMouseGlow() {
+  mouseGlow = document.body.querySelector('::after');
+}
+
+function updateMouseGlow(e) {
+  if (document.body.style.setProperty) {
+    document.body.style.setProperty('--mouse-x', e.clientX + 'px');
+    document.body.style.setProperty('--mouse-y', e.clientY + 'px');
+  }
+}
+
+// Track mouse movement for glow effect
+document.addEventListener('mousemove', updateMouseGlow);
+
+// Hide glow when mouse leaves window
+document.addEventListener('mouseleave', () => {
+  if (document.body.style.setProperty) {
+    document.body.style.setProperty('--mouse-opacity', '0');
+  }
+});
+
+// Show glow when mouse enters window
+document.addEventListener('mouseenter', () => {
+  if (document.body.style.setProperty) {
+    document.body.style.setProperty('--mouse-opacity', '1');
+  }
+});
+
 // Update cursor position
 function updateCursor() {
   const span = document.createElement('span');
@@ -115,7 +146,10 @@ function transformPortfolio(json) {
   const projects = (json.bigProjects.projects || []).map(p => ({
     name: p.projectName,
     description: p.projectDesc,
-    url: p.footerLink && p.footerLink[0] ? p.footerLink[0].url : '#'
+    url: p.footerLink && p.footerLink[0] ? p.footerLink[0].url : '#',
+    aiUsed: p.aiUsed !== undefined ? p.aiUsed : false,
+    aiLevel: p.aiLevel || 'low',
+    year: p.year || '2024'
   }));
 
   const experience = (json.workExperiences.experience || []).map(e => ({
@@ -153,8 +187,14 @@ async function loadPortfolioData() {
     window.projectList = mapped.projects;
     window.educationList = mapped.education;
     window.skillList = json.skillsSection.softwareSkills || [];
+    console.log('Using remote portfolio data');
   } catch (err) {
     console.error('Failed to load portfolio data', err);
+    // Fallback to local data if remote fetch fails
+    if (window.portfolioData) {
+      Object.assign(data, window.portfolioData);
+      console.log('Using local portfolio data as fallback');
+    }
   }
 }
 
@@ -181,7 +221,26 @@ function formatEducation(edu) {
 
 function formatProjects(projs) {
   return projs
-    .map(p => `- <a href="${p.url}" target="_blank" class="gh-link">${p.name}</a>: ${p.description}`)
+    .map(p => {
+      let aiIndicator = '';
+      if (p.aiUsed) {
+        // Show only the AI level tag when AI is used
+        const aiLabels = {
+          low: '<span class="ai-tag ai-low">Low AI</span>',
+          medium: '<span class="ai-tag ai-medium">Medium AI</span>',
+          high: '<span class="ai-tag ai-high">High AI</span>',
+          vibecoded: '<span class="ai-tag ai-vibecoded">Vibecoded</span>'
+        };
+        aiIndicator = ` ${aiLabels[p.aiLevel] || aiLabels.low}`;
+      } else {
+        // Show "No AI" when AI is not used
+        aiIndicator = ' <span class="ai-tag ai-none">No AI</span>';
+      }
+      
+      const yearTag = p.year ? ` <span class="project-year">[${p.year}]</span>` : '';
+      
+      return `- <a href="${p.url}" target="_blank" class="gh-link">${p.name}</a>${yearTag}: ${p.description}${aiIndicator}`;
+    })
     .join('\n');
 }
 
