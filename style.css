@@ -5,6 +5,28 @@ body {
     color: #33ff33;
     text-shadow: 0 0 2px currentColor;
     font-size: 1rem;
+    --mouse-x: 0px;
+    --mouse-y: 0px;
+    --mouse-opacity: 1;
+  }
+
+  /* Custom mouse glow effect - very small, light and blurred */
+  body::after {
+    content: "";
+    position: fixed;
+    top: var(--mouse-y);
+    left: var(--mouse-x);
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(51, 255, 51, 0.05) 0%, rgba(51, 255, 51, 0.02) 50%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    opacity: var(--mouse-opacity);
+    transition: opacity 0.5s ease;
+    mix-blend-mode: screen;
+    filter: blur(3px);
   }
 
 body::before {
@@ -162,6 +184,109 @@ body::before {
   
   a.gh-link:hover {
     color: #2e8cbf;        /* Colore leggermente più chiaro al passaggio */
+  }
+
+  /* ------ AI Level Tags ------ */
+  .ai-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 6px;
+    text-shadow: 0 0 3px currentColor;
+  }
+
+  .ai-tag.ai-low {
+    background: rgba(100, 200, 255, 0.2);
+    color: #64c8ff;
+    border: 1px solid #64c8ff;
+  }
+
+  .ai-tag.ai-medium {
+    background: rgba(255, 200, 0, 0.2);
+    color: #ffc800;
+    border: 1px solid #ffc800;
+  }
+
+  .ai-tag.ai-high {
+    background: rgba(255, 100, 0, 0.2);
+    color: #ff6400;
+    border: 1px solid #ff6400;
+  }
+
+  .ai-tag.ai-none {
+    background: rgba(128, 128, 128, 0.2);
+    color: #888888;
+    border: 1px solid #888888;
+  }
+
+  .ai-tag.ai-vibecoded {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid;
+    animation: vibecoded-rainbow 3s linear infinite, vibecoded-wiggle 0.5s ease-in-out infinite;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+
+  /* ------ Project Year Tag ------ */
+  .project-year {
+    color: #888888;
+    font-size: 0.9em;
+    margin-left: 4px;
+  }
+
+  @keyframes vibecoded-rainbow {
+    0% {
+      color: #ff0000;
+      border-color: #ff0000;
+      text-shadow: 0 0 10px #ff0000;
+    }
+    16.66% {
+      color: #ff7700;
+      border-color: #ff7700;
+      text-shadow: 0 0 10px #ff7700;
+    }
+    33.33% {
+      color: #ffff00;
+      border-color: #ffff00;
+      text-shadow: 0 0 10px #ffff00;
+    }
+    50% {
+      color: #00ff00;
+      border-color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+    }
+    66.66% {
+      color: #0099ff;
+      border-color: #0099ff;
+      text-shadow: 0 0 10px #0099ff;
+    }
+    83.33% {
+      color: #9900ff;
+      border-color: #9900ff;
+      text-shadow: 0 0 10px #9900ff;
+    }
+    100% {
+      color: #ff0000;
+      border-color: #ff0000;
+      text-shadow: 0 0 10px #ff0000;
+    }
+  }
+
+  @keyframes vibecoded-wiggle {
+    0%, 100% {
+      transform: rotate(0deg) translateY(0px);
+    }
+    25% {
+      transform: rotate(-2deg) translateY(-1px);
+    }
+    50% {
+      transform: rotate(0deg) translateY(0px);
+    }
+    75% {
+      transform: rotate(2deg) translateY(1px);
+    }
   }
 
   /* ------ Mobile adjustments ------ */
