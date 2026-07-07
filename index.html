@@ -3,24 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terminal Portfolio</title>
+  <!-- Applica il tema salvato PRIMA del paint per evitare il flash -->
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('portfolio.theme')==='amber'?'amber':'green');}catch(e){}</script>
+  <title>Alessio Iodice — iOS Developer · Terminal Portfolio</title>
+  <meta name="description" content="Terminal-style portfolio of Alessio (Yoddikko), iOS Developer. Type commands to explore projects, skills, experience and contacts." />
+  <meta name="author" content="Alessio Iodice" />
+  <meta name="theme-color" content="#000000" />
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Alessio Iodice — iOS Developer · Terminal Portfolio" />
+  <meta property="og:description" content="A terminal-style portfolio. Type commands to explore projects, skills and experience." />
+  <meta name="twitter:card" content="summary" />
+  <!-- Favicon SVG inline (>_ verde su nero), nessun file esterno -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20fill='%230a0e0a'/%3E%3Ctext%20x='1.5'%20y='12'%20font-family='monospace'%20font-size='11'%20fill='%2333ff33'%3E%3E_%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 <body>
     <div class="terminal">
-        <div id="output"></div>
-      
-        <div class="input-line">
-          <span class="prompt">welcome@portfolio:~$</span>
-          <input id="input" autofocus autocomplete="off" />
-          <span class="cursor"></span>
+        <div class="titlebar">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="title">alessio@portfolio — zsh</span>
+          <button id="theme-toggle" class="titlebar-btn" type="button" aria-label="Switch color theme" title="Switch color theme">◑</button>
         </div>
-      
+        <div class="term-body">
+          <div id="output" role="log"></div>
+          <!-- Regione dedicata per screen reader: riceve solo il testo finale
+               di ogni risposta (evita l'annuncio delle stringhe parziali del typewriter) -->
+          <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+          <div id="cmdbar" role="toolbar" aria-label="Quick commands"></div>
+
+          <div class="input-line">
+            <span class="prompt">welcome@portfolio:~$</span>
+            <input id="input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text" aria-label="Command line" />
+            <span class="cursor"></span>
+          </div>
+        </div>
       </div>
       
-  <script src="portfolioData.js"></script>
-  <script src="script.js"></script>
+  <!-- Dati editabili (unica fonte di verità) -->
+  <script src="content.js"></script>
+  <!-- Moduli dell'app, in ordine di dipendenza (script classici, no build) -->
+  <script src="js/core.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/github.js"></script>
+  <script src="js/commands.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
