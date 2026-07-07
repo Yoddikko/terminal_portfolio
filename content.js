@@ -1,46 +1,48 @@
 // ============================================================================
 //  content.js  —  L'UNICO FILE CHE DEVI MODIFICARE
 // ============================================================================
-//  Qui c'è TUTTO quello che appare sul tuo portfolio: nome, presentazione,
-//  skills, progetti, esperienze, istruzione, certificazioni, premi e contatti.
-//  Per cambiare ciò che vedono i visitatori: modifica i valori qui sotto,
-//  salva il file, poi fai commit & push (o ricarica index.html in locale).
-//
-//  NON SERVE SAPER PROGRAMMARE. Segui queste 4 regole e non rompi nulla:
+//  Qui c'è TUTTO quello che appare sul portfolio. Modifica i valori, salva,
+//  poi commit & push (o ricarica index.html in locale).
+//  4 regole per non rompere nulla:
 //    1. Tieni le virgolette "" attorno a ogni testo.
 //    2. Metti una virgola , dopo ogni elemento di una lista.
-//    3. Non cancellare mai le parentesi quadre [ ] né le graffe { }.
-//    4. Non cancellare mai l'ultima riga  };  in fondo al file.
-//  Tutto ciò che segue due slash  //  è una NOTA per te (ignorata dal sito).
-//  Per aggiungere un elemento: COPIA un blocco { ... }, e incollalo sotto.
+//    3. Non cancellare mai [ ] né { }.
+//    4. Non cancellare l'ultima riga  };  in fondo al file.
+//  Tutto dopo // è una nota ignorata dal sito.
 // ============================================================================
 
 window.PORTFOLIO = {
 
   // ---------------------------- INFO DI BASE --------------------------------
-  name: "Alessio",
-  title: "iOS Developer",
-  about: "Hi, I'm Ale. A passionate iOS Developer having an experience in building mobile applications with Swift.",
+  name: "Alessio Iodice",
+  title: "QA Automation Engineer · iOS Developer",
+  location: "Madrid, Spain 🇪🇸",
+  about: "I bring creativity, curiosity, and an out-of-the-box mindset to every project I work on. I'm constantly exploring new ideas — reflected in the variety of repositories and projects I build across different areas. I see myself as a versatile developer: wherever I'm placed, I adapt quickly, find solutions, and deliver value.",
 
   // ---------------------------- CONTATTI & LINK -----------------------------
-  // NOTA: il vecchio portfolio usava "yodikko@protonmail.com". Ho lasciato la
-  // gmail (già usata qui e nel tuo git). Cambiala se preferisci la protonmail.
   email: "alessioiodiceuni@gmail.com",
-  phone: "+39 338 2183105",                                   // dal vecchio portfolio
-  github: "Yoddikko",                                         // SOLO l'username
+  phone: "+39 3382183105",
+  github: "Yoddikko",                                        // SOLO l'username
   linkedin: "https://www.linkedin.com/in/alessio-iodice-4a22131b0/",
-  // CV: link dal vecchio portfolio (Google Drive). Puoi anche mettere "assets/cv.pdf".
+  website: "https://yoddikko.github.io/",
+  behance: "https://behance.net/yoddale",
   cvUrl: "https://drive.google.com/file/d/1xQOp-skncx-j7neIY_iMbyJ5SqhGXGVo/view?usp=sharing",
 
-  // ---------------------------- SKILLS --------------------------------------
-  //  L'emoji iniziale diventa un'icona: ⚡ fulmine · 🤖 robot · 🛸 razzo.
+  // ---------------------------- LINGUE & INTERESSI --------------------------
+  languages: ["Italian (native)", "English (C1)", "Spanish (A1)"],
+  interests: ["Video games", "Open source", "Privacy & technology"],
+
+  // ---------------------------- TECH STACK (per categorie) ------------------
+  //  Ogni voce: { category: "Titolo", items: ["...", "..."] }
   skills: [
-    "⚡ Develop highly interactive iOS applications",
-    "🤖 Integration of different frameworks like CoreData, CoreML, AVFoundation, SceneKit, ARKit and much more",
-    "🛸 I enjoy being creative and bringing my artistic vision into my projects. My passion for innovation and creativity drives me to always find original and surprising solutions",
+    { category: "QA Automation & Testing", items: ["Quality Assurance", "XCTest", "Selenium", "Postman", "HTML Reports", "Jira"] },
+    { category: "iOS & Mobile Development", items: ["Swift", "iOS", "Xcode", "MVVM", "SwiftLint"] },
+    { category: "Development & DevOps", items: ["Python", "C++", "Git", "GitHub Actions", "AWS"] },
+    { category: "AI & Automation", items: ["Claude Code", "Codex", "Generative AI"] },
+    { category: "Design & Collaboration", items: ["Figma", "Sketch", "Miro"] },
   ],
-  // Tecnologie principali (mostrate come riga "Stack" sotto le skills).
-  stack: ["Swift", "C++", "AWS", "Git", "Figma"],
+  // Soft skills (mostrate in coda al comando `skills`)
+  softSkills: ["Problem solving", "Creative thinking", "Critical thinking", "Cross-cultural communication", "Teamwork", "Adaptability", "Digital ethics", "Privacy awareness"],
 
   // ---------------------------- PROGETTI ------------------------------------
   //  Campi: name, description, year, aiUsed (true/false), aiLevel
@@ -101,68 +103,63 @@ window.PORTFOLIO = {
   ],
 
   // ---------------------------- ESPERIENZE (recenti prima) ------------------
-  //  Campi: role, company, period, details
   experience: [
     {
       role: "QA Automation Engineer",
       company: "M47 Labs",
-      period: "August 2023 – Present",
-      details: "M47 Labs is a multicultural AI-centered company based in Spain, contributing to innovative projects in a diverse and dynamic environment.",
-    },
-    {
-      role: "iOS Developer",
-      company: "Apple Developer Academy | Pier Program",
-      period: "July 2022 – June 2023",
-      details: "During my second year at the Apple Developer Academy (Pier program) I worked on a suite of apps developed with Barefoot College International. I took over a 4-year-old codebase supporting older iOS versions: UIKit for the interface, Filemaker as the online database and CoreData as the local one.",
+      period: "August 2023 – Present · Madrid, ES",
+      details: "After the Apple Developer Academy I joined M47 Labs, a tech company focused on AI technology and projects with leading IT companies. I work as a QA Automation Engineer, focusing on unit testing and code maintenance.",
     },
   ],
 
   // ---------------------------- ISTRUZIONE ----------------------------------
-  //  Campi: degree (o ""), institution, year, details (o "")
   education: [
     {
       degree: "Bachelor's Degree in Computer Engineering",
-      institution: "Università degli Studi di Napoli Parthenope",
-      year: "September 2019 – Present",
-      details: "Currently studying. Focus on C++.",
+      institution: "Università Mercatorum",
+      year: "2023 – 2026 · Remote, IT",
+      details: "Started my studies at Università degli Studi di Napoli Parthenope and later completed the bachelor's degree remotely at Università Mercatorum.",
     },
     {
       degree: "",
       institution: "Apple Developer Academy — Pier Program",
-      year: "July 2022 – June 2023",
-      details: "Real-work-based program: a full year on a single project with the same team, agile/Scrum, interfacing with a stakeholder. Role: Backend Developer (CoreData, UIKit, FileMaker, API).",
+      year: "2022 – 2023 · Naples, IT",
+      details: "Second year of the Academy: a full year on a single project with the same team, using agile methodologies. Backend developer on a project with Barefoot International — a large, long-running legacy Swift codebase.",
     },
     {
       degree: "",
       institution: "Apple Developer Academy — Student Year",
-      year: "September 2021 – June 2022",
-      details: "9-month program (partnership between Università di Napoli Federico II and Apple): native iOS development, UI/UX, app business, CBL process, SwiftUI and Swift frameworks.",
+      year: "2021 – 2022 · Naples, IT",
+      details: "Nine-month program covering all aspects of app development; specialized in coding, plus process, UI and UX.",
     },
     {
       degree: "",
-      institution: "iOS Foundation Program — Advanced Course",
-      year: "June 2020 – July 2020",
-      details: "Two months on watchOS/tvOS development and CreateML/CoreML (machine learning).",
+      institution: "iOS Foundation Program — Advanced course (Università Parthenope)",
+      year: "2020 · Remote",
+      details: "Two-month program exploring application development for tvOS and watchOS.",
     },
     {
       degree: "",
-      institution: "iOS Foundation Program — Basic Course",
-      year: "November 2019 – December 2019",
-      details: "One-month intro to iOS app development, storytelling and app business (with Università Parthenope).",
+      institution: "iOS Foundation Program — Base course (Università Parthenope)",
+      year: "2020 · Naples, IT",
+      details: "Introduction to application development.",
     },
   ],
 
   // ---------------------------- CERTIFICAZIONI ------------------------------
-  //  Campi: title, url (link alla certificazione; lascia "" se non c'è)
+  //  Campi: title, url (lascia "" se non c'è un link)
   certifications: [
     { title: "AWS Academy Graduate — Introduction to Cloud, Semester 2", url: "https://www.credly.com/badges/fb3b2d67-f006-4dcf-9492-973230d48565/linked_in?t=rw6q51" },
     { title: "AWS Academy Graduate — Introduction to Cloud, Semester 1", url: "https://www.credly.com/badges/533b8455-e410-45b5-bf7b-234a8c5ed5e9/linked_in_profile" },
-    { title: "Cisco — Introduction to Cybersecurity", url: "https://www.credly.com/badges/9c4b7782-a924-4a6d-84d3-a5f936b7fab3/linked_in_profile" },
     { title: "Cisco — CCNA: Introduction to Networks", url: "https://www.credly.com/badges/ac2e0ab9-9687-474b-9b8c-3eb67235bb1c?source=linked_in_profile" },
+    { title: "Cisco — Introduction to Cybersecurity", url: "https://www.credly.com/badges/9c4b7782-a924-4a6d-84d3-a5f936b7fab3/linked_in_profile" },
+    { title: "Cisco — Introduction to IoT", url: "" },
+    { title: "Cisco — Get Connected", url: "" },
+    { title: "English Language Certificate B1 — AM Language", url: "" },
+    { title: "Apple Teacher", url: "" },
   ],
 
   // ---------------------------- PREMI ---------------------------------------
-  //  Campi: title, detail (o ""), url (o "")
   awards: [
     {
       title: "WWDC Swift Student Challenge 2023 — Winner",

@@ -36,6 +36,14 @@ const commands = {
       out += `<br><i class="fab fa-linkedin"></i> `
         + `<a href="${data.linkedinUrl}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
     }
+    if (data.website) {
+      out += `<br><i class="fas fa-globe"></i> `
+        + `<a href="${data.website}" target="_blank" rel="noopener noreferrer" class="gh-link">Website</a>`;
+    }
+    if (data.behance) {
+      out += `<br><i class="fab fa-behance"></i> `
+        + `<a href="${data.behance}" target="_blank" rel="noopener noreferrer" class="gh-link">Behance</a>`;
+    }
     return out;
   },
   curriculum: () => {
