@@ -4,31 +4,35 @@
 
 const data = {};
 
-function mapSkillBullet(bullet) {
-  const mappings = {
-    '⚡': 'bolt',
-    '🤖': 'robot',
-    '🛸': 'rocket'
-  };
-  const iconKey = Object.keys(mappings).find(e => bullet.trim().startsWith(e));
-  const icon = iconKey
-    ? `<i class="fas fa-${mappings[iconKey]}"></i>`
-    : '<i class="fas fa-check"></i>';
-  const text = iconKey ? bullet.replace(iconKey, '').trim() : bullet.trim();
-  return `${icon} ${text}`;
-}
-
 // Legge window.PORTFOLIO (definito in content.js) e popola `data`, in modo
 // difensivo: se un campo manca o è scritto male, il resto continua a funzionare.
 function applyContent() {
   const P = window.PORTFOLIO || {};
-  data.about = P.about ? `<i class="fas fa-user"></i> ${P.about}` : '';
 
-  const bullets = (Array.isArray(P.skills) ? P.skills : []).map(mapSkillBullet);
-  if (Array.isArray(P.stack) && P.stack.length) {
-    bullets.push(`<i class="fas fa-toolbox"></i> Stack: ${P.stack.join(', ')}`);
+  // about: paragrafo + meta (titolo, location, lingue, interessi)
+  const aboutLines = [];
+  if (P.about) aboutLines.push(`<i class="fas fa-user"></i> ${P.about}`);
+  const meta = [];
+  if (P.title) meta.push(`<i class="fas fa-briefcase"></i> ${P.title}`);
+  if (P.location) meta.push(`<i class="fas fa-location-dot"></i> ${P.location}`);
+  if (Array.isArray(P.languages) && P.languages.length) {
+    meta.push(`<i class="fas fa-language"></i> ${P.languages.join(', ')}`);
   }
-  data.skills = bullets.join('\n');
+  if (Array.isArray(P.interests) && P.interests.length) {
+    meta.push(`<span class="muted">Interests: ${P.interests.join(', ')}</span>`);
+  }
+  if (meta.length) aboutLines.push(meta.join('<br>'));
+  data.about = aboutLines.join('<br><br>');
+
+  // skills: tech stack per categorie + soft skills
+  const skillLines = (Array.isArray(P.skills) ? P.skills : []).map(c => {
+    const items = Array.isArray(c.items) ? c.items.join(', ') : '';
+    return `<span class="field-label">${c.category}:</span> ${items}`;
+  });
+  if (Array.isArray(P.softSkills) && P.softSkills.length) {
+    skillLines.push(`<span class="field-label">Soft skills:</span> ${P.softSkills.join(', ')}`);
+  }
+  data.skills = skillLines.join('\n');
 
   data.projects = (Array.isArray(P.projects) ? P.projects : []).map(p => ({
     name: p.name || '',
@@ -65,6 +69,8 @@ function applyContent() {
   data.githubUsername = P.github || 'Yoddikko';
   data.email = P.email || '';
   data.phone = P.phone || '';
+  data.website = P.website || '';
+  data.behance = P.behance || '';
   data.cvUrl = P.cvUrl || '';
 }
 
@@ -121,7 +127,8 @@ function formatProjects(projs) {
         ? `<br>  ${projectLinks(p.links)}`
         : '';
 
-      return `- ${title}${yearTag}: ${p.description}${aiIndicator}${linksLine}`;
+      const desc = p.description ? `: ${p.description}` : '';
+      return `- ${title}${yearTag}${desc}${aiIndicator}${linksLine}`;
     })
     .join('\n\n');
 }
