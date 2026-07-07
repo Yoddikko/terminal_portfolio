@@ -1,9 +1,33 @@
+:root {
+    /* Palette del terminale — gerarchia per leggibilità
+       (accento verde = prompt/banner, comando digitato = brillante,
+        risposte = verde-grigio soffuso, link = ciano) */
+    --term-bg: #0a0e0a;      /* sfondo quasi nero */
+    --term-text: #bcd2bc;    /* testo/risposte: soffuso e leggibile */
+    --term-bright: #eafff0;  /* comandi digitati / input: brillante */
+    --term-accent: #33ff33;  /* prompt, banner, cursore */
+    --term-link: #56d3ec;    /* link (ciano) */
+    --term-dim: #7f947f;     /* etichette/testo attenuato */
+    --accent-rgb: 51, 255, 51; /* accento in formato RGB per rgba(...) */
+  }
+
+  /* Tema ambra (vecchio monitor) — attivato dal toggle in titlebar */
+  html[data-theme="amber"] {
+    --term-bg: #0f0b04;
+    --term-text: #d8bd85;
+    --term-bright: #fff0cf;
+    --term-accent: #ffb000;
+    --term-link: #6fd0ff;
+    --term-dim: #9a8355;
+    --accent-rgb: 255, 176, 0;
+  }
+
 body {
     margin: 0;
     font-family: monospace;
-    background: black;
-    color: #33ff33;
-    text-shadow: 0 0 2px currentColor;
+    background: var(--term-bg);
+    color: var(--term-text);
+    text-shadow: 0 0 1px currentColor;
     font-size: 1rem;
     --mouse-x: 0px;
     --mouse-y: 0px;
@@ -18,7 +42,7 @@ body {
     left: var(--mouse-x);
     width: 40px;
     height: 40px;
-    background: radial-gradient(circle, rgba(51, 255, 51, 0.05) 0%, rgba(51, 255, 51, 0.02) 50%, transparent 100%);
+    background: radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, rgba(var(--accent-rgb), 0.02) 50%, transparent 100%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1000;
@@ -44,9 +68,9 @@ body::before {
             rgba(0, 0, 0, 0) 2px,
             rgba(0, 0, 0, 0) 4px
         ),
-        radial-gradient(circle at center, rgba(0, 255, 0, 0.1), rgba(0, 0, 0, 0.7));
+        radial-gradient(circle at center, rgba(var(--accent-rgb), 0.04), rgba(0, 0, 0, 0.75));
     mix-blend-mode: screen;
-    animation: flicker 0.15s infinite;
+    animation: flicker 4s ease-in-out infinite;
     z-index: 1;
   }
 
@@ -57,11 +81,89 @@ body::before {
   }
   
   .terminal {
-    height: 100vh;            /* fallback */
-    height: 100dvh;           /* si adatta anche con la tastiera mobile */
+    height: 92dvh;
+    max-width: 1040px;
+    margin: 4dvh auto;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(var(--accent-rgb), 0.28);
+    border-radius: 10px;
+    box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.07), 0 24px 60px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    backdrop-filter: blur(1px);
+  }
+
+  /* Barra del titolo stile finestra terminale */
+  .titlebar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.85rem;
+    background: rgba(var(--accent-rgb), 0.06);
+    border-bottom: 1px solid rgba(var(--accent-rgb), 0.16);
+  }
+  .titlebar .dots {
+    display: flex;
+    gap: 0.45rem;
+  }
+  .titlebar .dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .titlebar .dots span:nth-child(1) { background: #ff5f56; }
+  .titlebar .dots span:nth-child(2) { background: #ffbd2e; }
+  .titlebar .dots span:nth-child(3) { background: #27c93f; }
+  .titlebar .title {
+    flex: 1;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--term-dim);
+    opacity: 0.9;
+    text-shadow: none;
+    letter-spacing: 0.3px;
+  }
+
+  /* Bottone nella titlebar (toggle tema) */
+  .titlebar-btn {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 1px solid rgba(var(--accent-rgb), 0.4);
+    color: var(--term-accent);
+    border-radius: 6px;
+    width: 26px;
+    height: 22px;
+    line-height: 1;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .titlebar-btn:hover {
+    background: rgba(var(--accent-rgb), 0.15);
+    border-color: var(--term-accent);
+  }
+  .titlebar-btn:focus-visible {
+    outline: 2px solid var(--term-link);
+    outline-offset: 2px;
+  }
+
+  /* Corpo del terminale (area scrollabile + input) */
+  .term-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 1rem 1.1rem;
     box-sizing: border-box;
   }
   
@@ -73,28 +175,38 @@ body::before {
     font-family: monospace;
     white-space: pre-wrap;     /* consente l'andare a capo automatico */
     word-break: break-word;    /* evita la scroll orizzontale */
-    line-height: 1.2;
+    line-height: 1.5;          /* più aria tra le righe = più leggibile */
+    text-shadow: 0 0 1px currentColor; /* glow più leggero per nitidezza */
   }
 
-  /* Risposte del terminale - verde più scuro */
+  /* Stacca visivamente ogni comando eseguito dal precedente */
+  #output > .line {
+    margin-top: 1rem;
+  }
+  #output > .line:first-child {
+    margin-top: 0;
+  }
+
+  /* Risposte del terminale - testo soffuso e leggibile */
   #output > div:not(.line),
   #output > pre {
-    color: #28a428;
+    color: var(--term-text);
   }
-  
-  /* ASCII art mantiene il colore originale */
+
+  /* ASCII art nel colore accento */
   #output > pre#ascii-art {
-    color: #33ff33;
+    color: var(--term-accent);
+    overflow: hidden;
+    white-space: pre;
   }
   
   .input-line {
     display: flex;
     align-items: center;
     gap: 0.5rem; /* spazio tra prompt e input */
-    position: sticky; /* resta visibile quando appare la tastiera */
-    bottom: 0;
-    background: black;
-    position: relative; /* per posizionare il cursore */
+    background: transparent;
+    position: relative; /* contesto per il cursore assoluto; resta in fondo grazie al flex */
+    flex: 0 0 auto;
   }
   
   .input-line .prompt {
@@ -103,8 +215,8 @@ body::before {
   
   #input {
     flex-grow: 1; /* occupa il resto dello spazio disponibile */
-    background: black !important;
-    color: #33ff33 !important;
+    background: transparent !important;
+    color: var(--term-bright) !important;
     border: none;
     outline: none;
     font-family: monospace;
@@ -117,7 +229,7 @@ body::before {
     position: absolute;
     width: 0.6em;
     height: 1em;
-    background: #33ff33;
+    background: var(--term-accent);
     animation: blink 1s step-end infinite;
     pointer-events: none;
     top: 50%;
@@ -130,14 +242,14 @@ body::before {
     0%, 49% { opacity: 1; }
     50%, 100% { opacity: 0; }
   }
-    
+
   .prompt {
-    color: #33ff33;
+    color: var(--term-accent);
   }
 
-  /* Linea del comando inviato - verde brillante */
+  /* Linea del comando inviato - testo brillante per distinguerlo dall'output */
   .line {
-    color: #33ff33;
+    color: var(--term-bright);
   }
   
   pre {
@@ -151,13 +263,13 @@ body::before {
   }
   
   a[data-cmd] {
-    color: #2e8cbf;
+    color: var(--term-link);
     text-decoration: underline;
     cursor: pointer;
   }
 
   a[data-cmd]:hover {
-    color: #2e8cbf;
+    color: var(--term-link);
   }
 
   a {
@@ -178,12 +290,13 @@ body::before {
   }
 
   a.gh-link {
-    color: #2e8cbf;        /* Ciano acceso */
-    text-decoration: none; /* Nessuna sottolineatura */
+    color: var(--term-link);
+    text-decoration: none;
   }
-  
+
   a.gh-link:hover {
-    color: #2e8cbf;        /* Colore leggermente più chiaro al passaggio */
+    color: var(--term-link);
+    text-decoration: underline;
   }
 
   /* ------ AI Level Tags ------ */
@@ -231,9 +344,24 @@ body::before {
 
   /* ------ Project Year Tag ------ */
   .project-year {
-    color: #888888;
+    color: var(--term-dim);
     font-size: 0.9em;
     margin-left: 4px;
+  }
+
+  /* ------ Utility ------ */
+  .field-label { color: var(--term-accent); }
+  .muted { color: var(--term-dim); }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   @keyframes vibecoded-rainbow {
@@ -289,12 +417,132 @@ body::before {
     }
   }
 
+  /* ------ Compact banner (mobile) ------ */
+  pre.banner-compact {
+    color: var(--term-accent);
+    line-height: 1.15;
+    overflow: hidden;
+    white-space: pre;
+  }
+
+  /* ------ Quick command bar (chips) ------ */
+  #cmdbar {
+    display: flex;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.7rem 0 0.55rem;
+    margin-top: 0.3rem;
+    border-top: 1px solid rgba(var(--accent-rgb), 0.14);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  #cmdbar::-webkit-scrollbar { display: none; }
+
+  .cmd-chip {
+    flex: 0 0 auto;
+    background: rgba(var(--accent-rgb), 0.07);
+    color: var(--term-accent);
+    border: 1px solid rgba(var(--accent-rgb), 0.35);
+    border-radius: 999px;
+    padding: 6px 15px;
+    font-family: monospace;
+    font-size: 0.85em;
+    cursor: pointer;
+    text-shadow: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .cmd-chip:hover {
+    background: rgba(var(--accent-rgb), 0.18);
+    border-color: var(--term-accent);
+    color: var(--term-bright);
+  }
+  .cmd-chip:focus-visible {
+    background: rgba(var(--accent-rgb), 0.18);
+    border-color: var(--term-accent);
+    color: var(--term-bright);
+    outline: 2px solid var(--term-link);
+    outline-offset: 2px;
+  }
+
+  /* Bottone "copy" accanto all'email */
+  .copy-btn {
+    background: transparent;
+    border: 1px solid rgba(var(--accent-rgb), 0.4);
+    color: var(--term-accent);
+    border-radius: 5px;
+    padding: 1px 8px;
+    margin-left: 6px;
+    font-family: monospace;
+    font-size: 0.8em;
+    cursor: pointer;
+    text-shadow: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .copy-btn:hover {
+    background: rgba(var(--accent-rgb), 0.15);
+    border-color: var(--term-accent);
+  }
+  .copy-btn:focus-visible {
+    outline: 2px solid var(--term-link);
+    outline-offset: 2px;
+  }
+  .copy-btn.copied {
+    color: var(--term-bright);
+    border-color: var(--term-accent);
+  }
+
   /* ------ Mobile adjustments ------ */
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
     body {
       font-size: 0.9rem;
     }
     #input {
-      font-size: 0.9rem;
+      font-size: 1rem; /* >=16px: evita lo zoom automatico di iOS Safari sul focus */
+    }
+    /* Su telefono la finestra occupa tutto lo schermo (niente chrome flottante) */
+    .terminal {
+      height: 100dvh;
+      max-width: none;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .term-body {
+      padding: 0.7rem;
+    }
+    .cmd-chip {
+      padding: 8px 14px; /* target touch più comodo */
+    }
+  }
+
+  /* ------ Touch devices: usa il caret nativo (il blocco custom sfasa a metà testo) ------ */
+  @media (hover: none) and (pointer: coarse) {
+    #input {
+      caret-color: var(--term-accent) !important;
+    }
+    .cursor {
+      display: none;
+    }
+  }
+
+  /* ------ Rispetta le preferenze di riduzione del movimento ------ */
+  @media (prefers-reduced-motion: reduce) {
+    body::before {
+      animation: none; /* niente flicker CRT a schermo intero */
+    }
+    body::after {
+      display: none; /* niente glow del mouse */
+    }
+    .cursor {
+      animation: none;
+      opacity: 1;
+    }
+    .ai-tag.ai-vibecoded {
+      animation: none;
+      border-color: #ff00ff;
+      color: #ff00ff;
     }
   }
