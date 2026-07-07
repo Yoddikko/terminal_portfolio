@@ -49,11 +49,31 @@ window.PORTFOLIO = {
   //  (none|low|medium|high|vibecoded), links: [ {name, url}, ... ]
   projects: [
     {
+      name: "AutoMercatorum",
+      description: "A set of tools that assist you throughout your studies at Università degli Studi Mercatorum.",
+      year: "2026",
+      aiUsed: true,
+      aiLevel: "vibecoded",
+      links: [
+        { name: "Website", url: "https://automercatorum.top/" },
+      ],
+    },
+    {
+      name: "Scilla",
+      description: "An app to organise your TV series and films: save titles and track your watch progress. Paired with your own server that follows Scilla's API, it also lets you stream films and series straight to your phone.",
+      year: "2025",
+      aiUsed: true,
+      aiLevel: "vibecoded",
+      links: [
+        { name: "TestFlight", url: "https://testflight.apple.com/join/jYNJmhu6" },
+      ],
+    },
+    {
       name: "Barefoot Suite",
       description: "Ongoing project born from the collaboration between the Apple Developer Academy and Barefoot College. The suite is two apps and a framework; the main app is Sakhi. I made the app fully offline, managing data and server synchronisation, refactoring and app logic. Built in UIKit.",
       year: "2023",
-      aiUsed: false,
-      aiLevel: "none",
+      aiUsed: true,
+      aiLevel: "low",
       links: [
         { name: "More info", url: "https://www.behance.net/gallery/172661547/Barefoot-Suite-iOS-iPadOS-applications" },
       ],
@@ -62,8 +82,8 @@ window.PORTFOLIO = {
       name: "Yodd AI Chat",
       description: "My first important solo open-source project, built in three weeks: a frontend app for OpenAI's ChatGPT API, with DALL-E image generation. Made with SwiftUI, MVVM, CoreData and SwiftLint.",
       year: "2023",
-      aiUsed: false,
-      aiLevel: "none",
+      aiUsed: true,
+      aiLevel: "low",
       links: [
         { name: "GitHub", url: "https://github.com/Yoddikko/yoddChatGPT" },
         { name: "App Store", url: "https://apps.apple.com/us/app/yoddaichat/id1672839275" },
@@ -83,8 +103,8 @@ window.PORTFOLIO = {
       name: "ASL Recognizer",
       description: "A one-week deliverable that analyses and recognises the sign-language alphabet using machine learning (CreateML and CoreML). Made during my student year at the Apple Academy.",
       year: "2022",
-      aiUsed: false,
-      aiLevel: "none",
+      aiUsed: true,
+      aiLevel: "low",
       links: [
         { name: "GitHub", url: "https://github.com/Yoddikko/ASL-Recognizer" },
       ],
@@ -93,8 +113,8 @@ window.PORTFOLIO = {
       name: "Now.",
       description: "WWDC 2023 winner — a short (under 3 minutes) experience for the WWDC 2023 Swift Student Challenge, built in less than a week. Now. is a safe space to pause, unwind and reflect on the present, inspired by Stoic philosophy.",
       year: "2023",
-      aiUsed: false,
-      aiLevel: "none",
+      aiUsed: true,
+      aiLevel: "low",
       links: [
         { name: "GitHub", url: "https://github.com/Yoddikko/Now" },
         { name: "Video", url: "https://www.youtube.com/watch?v=p4cmUtHqRlM&ab_channel=Alessio" },

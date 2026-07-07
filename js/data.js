@@ -127,7 +127,8 @@ function formatProjects(projs) {
         ? `<br>  ${projectLinks(p.links)}`
         : '';
 
-      return `- ${title}${yearTag}: ${p.description}${aiIndicator}${linksLine}`;
+      const desc = p.description ? `: ${p.description}` : '';
+      return `- ${title}${yearTag}${desc}${aiIndicator}${linksLine}`;
     })
     .join('\n\n');
 }
