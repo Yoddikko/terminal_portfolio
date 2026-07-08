@@ -60,10 +60,10 @@ function renderGitHubInfo(user, repos) {
     .slice(0, 4);
 
   const icon = {
-    user: '<i class="fas fa-user"></i>',
-    star: '<i class="fas fa-star" style="color:yellow;"></i>',
-    repo: '<i class="fas fa-folder-open"></i>',
-    followers: '<i class="fas fa-users"></i>'
+    user: '<i aria-hidden="true" class="fas fa-user"></i>',
+    star: '<i aria-hidden="true" class="fas fa-star" style="color:yellow;"></i>',
+    repo: '<i aria-hidden="true" class="fas fa-folder-open"></i>',
+    followers: '<i aria-hidden="true" class="fas fa-users"></i>'
   };
 
   const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="gh-link">${text}</a>`;
@@ -118,6 +118,6 @@ async function githubCommand(username) {
   } catch (err) {
     stop();
     loadingDiv.remove();
-    return `<i class="fas fa-times-circle"></i> Error fetching GitHub info: ${escapeHtml(err.message)}`;
+    return `<i aria-hidden="true" class="fas fa-times-circle"></i> Error fetching GitHub info: ${escapeHtml(err.message)}`;
   }
 }

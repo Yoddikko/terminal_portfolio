@@ -40,17 +40,40 @@ function longestCommonPrefix(arr) {
 }
 
 function handleAutocomplete() {
-  const typed = input.value.trim().toLowerCase();
+  const raw = input.value;
+  const typed = raw.trim();
   if (!typed) return;
+
+  // Completamento degli argomenti di `cat <file>`
+  const firstTok = typed.split(/\s+/)[0].toLowerCase();
+  if (firstTok === 'cat' && /\s/.test(raw)) {
+    const frag = raw.replace(/^\s*cat\s+/i, '').toLowerCase();
+    const matches = CAT_FILES.filter(f => f.toLowerCase().startsWith(frag));
+    if (matches.length === 1) {
+      input.value = 'cat ' + matches[0];
+      setCaretEnd();
+    } else if (matches.length > 1) {
+      echoPrompt(typed);
+      const line = document.createElement('div');
+      line.textContent = matches.join('   ');
+      output.appendChild(line);
+      input.value = 'cat ' + longestCommonPrefix(matches);
+      setCaretEnd();
+      scrollToBottom();
+    }
+    return;
+  }
+
+  // Completamento dei nomi comando
   const names = Object.keys(commands).filter(c => !hiddenCommands.includes(c));
-  const matches = names.filter(c => c.startsWith(typed));
+  const matches = names.filter(c => c.startsWith(typed.toLowerCase()));
 
   if (matches.length === 1) {
     input.value = matches[0];
     setCaretEnd();
   } else if (matches.length > 1) {
     // Come una vera shell: mostra i candidati e completa il prefisso comune.
-    echoPrompt(input.value.trim());
+    echoPrompt(typed);
     const line = document.createElement('div');
     line.innerHTML = matches.map(cmdLink).join('&nbsp;&nbsp;');
     output.appendChild(line);
