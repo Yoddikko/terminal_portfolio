@@ -15,7 +15,7 @@ window.PORTFOLIO = {
 
   // ---------------------------- INFO DI BASE --------------------------------
   name: "Alessio Iodice",
-  title: "QA Automation Engineer · iOS Developer",
+  title: "QA Automation Engineer · Mobile Developer",
   location: "Madrid, Spain 🇪🇸",
   about: "I bring creativity, curiosity, and an out-of-the-box mindset to every project I work on. I'm constantly exploring new ideas — reflected in the variety of repositories and projects I build across different areas. I see myself as a versatile developer: wherever I'm placed, I adapt quickly, find solutions, and deliver value.",
 
