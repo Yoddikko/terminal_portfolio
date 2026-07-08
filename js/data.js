@@ -74,7 +74,6 @@ function applyContent() {
   data.linkedinUrl = P.linkedin || '#';
   data.githubUsername = P.github || 'Yoddikko';
   data.email = P.email || '';
-  data.phone = P.phone || '';
   data.behance = P.behance || '';
   data.cvUrl = P.cvUrl || '';
 }

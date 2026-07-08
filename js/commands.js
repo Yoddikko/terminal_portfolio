@@ -23,7 +23,7 @@ const commandHelp = {
   awards: 'Awards and recognitions.',
   github: 'Live GitHub stats: followers, total stars and top repos.',
   linkedin: 'Link to my LinkedIn profile.',
-  contact: 'Email, phone and social links.',
+  contact: 'Email and social links.',
   curriculum: 'Open / download my CV.',
   whoami: 'Print my name, role and location.',
   ls: 'List the "files" you can open with cat.',
@@ -98,10 +98,6 @@ const commands = {
     let out = `<i aria-hidden="true" class="fas fa-envelope"></i> Email: `
       + `<a href="mailto:${escapeHtml(data.email)}" class="gh-link">${escapeHtml(data.email)}</a>`
       + ` <button type="button" class="copy-btn" data-copy="${escapeHtml(data.email)}" aria-label="Copy email to clipboard">copy</button>`;
-    if (data.phone) {
-      out += `<br><i aria-hidden="true" class="fas fa-phone"></i> Phone: `
-        + `<a href="tel:${escapeHtml(data.phone.replace(/\s/g, ''))}" class="gh-link">${escapeHtml(data.phone)}</a>`;
-    }
     if (data.linkedinUrl && data.linkedinUrl !== '#') {
       out += `<br><i aria-hidden="true" class="fab fa-linkedin"></i> `
         + `<a href="${escapeHtml(data.linkedinUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
