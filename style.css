@@ -495,6 +495,10 @@ body::before {
 
   /* ------ Mobile adjustments ------ */
   @media (max-width: 700px) {
+    html, body {
+      height: 100%;
+      overflow: hidden; /* la pagina non scrolla: il terminale è ancorato al viewport visibile */
+    }
     body {
       font-size: 0.9rem;
     }
@@ -607,6 +611,8 @@ body::before {
   .cv-contact { margin: 0.4rem 0 0; font-size: 0.95rem; }
   .cv-contact a, .cv-links a, .cv-list a { color: #0b6bcb; text-decoration: none; }
   .cv-contact a:hover, .cv-links a:hover, .cv-list a:hover { text-decoration: underline; }
+  /* Nessun glow sui link in modalità CV (a differenza del terminale) */
+  #cv-view a { text-shadow: none; }
   .cv-sep { margin: 0 0.5rem; color: #b0b6b0; }
 
   .cv-section { margin-top: 1.8rem; }
