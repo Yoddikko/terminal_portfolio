@@ -75,7 +75,6 @@ function applyContent() {
   data.githubUsername = P.github || 'Yoddikko';
   data.email = P.email || '';
   data.phone = P.phone || '';
-  data.website = P.website || '';
   data.behance = P.behance || '';
   data.cvUrl = P.cvUrl || '';
 }
