@@ -8,7 +8,6 @@
 function cvContactHtml(P) {
   const items = [];
   if (P.email) items.push(`<a href="mailto:${escapeHtml(P.email)}">${escapeHtml(P.email)}</a>`);
-  if (P.phone) items.push(`<a href="tel:${escapeHtml(String(P.phone).replace(/\s/g, ''))}">${escapeHtml(P.phone)}</a>`);
   if (P.linkedin) items.push(`<a href="${escapeHtml(P.linkedin)}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`);
   if (P.github) items.push(`<a href="https://github.com/${escapeHtml(P.github)}" target="_blank" rel="noopener noreferrer">GitHub</a>`);
   if (P.behance) items.push(`<a href="${escapeHtml(P.behance)}" target="_blank" rel="noopener noreferrer">Behance</a>`);
