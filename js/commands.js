@@ -78,10 +78,6 @@ const commands = {
       out += `<br><i aria-hidden="true" class="fab fa-linkedin"></i> `
         + `<a href="${escapeHtml(data.linkedinUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
     }
-    if (data.website) {
-      out += `<br><i aria-hidden="true" class="fas fa-globe"></i> `
-        + `<a href="${escapeHtml(data.website)}" target="_blank" rel="noopener noreferrer" class="gh-link">Website</a>`;
-    }
     if (data.behance) {
       out += `<br><i aria-hidden="true" class="fab fa-behance"></i> `
         + `<a href="${escapeHtml(data.behance)}" target="_blank" rel="noopener noreferrer" class="gh-link">Behance</a>`;

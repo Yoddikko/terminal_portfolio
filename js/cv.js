@@ -11,7 +11,6 @@ function cvContactHtml(P) {
   if (P.phone) items.push(`<a href="tel:${escapeHtml(String(P.phone).replace(/\s/g, ''))}">${escapeHtml(P.phone)}</a>`);
   if (P.linkedin) items.push(`<a href="${escapeHtml(P.linkedin)}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`);
   if (P.github) items.push(`<a href="https://github.com/${escapeHtml(P.github)}" target="_blank" rel="noopener noreferrer">GitHub</a>`);
-  if (P.website) items.push(`<a href="${escapeHtml(P.website)}" target="_blank" rel="noopener noreferrer">Website</a>`);
   if (P.behance) items.push(`<a href="${escapeHtml(P.behance)}" target="_blank" rel="noopener noreferrer">Behance</a>`);
   return items.join('<span class="cv-sep">·</span>');
 }

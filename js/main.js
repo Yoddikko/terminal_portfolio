@@ -107,16 +107,21 @@ window.addEventListener('DOMContentLoaded', () => {
   keepFocus();
 });
 
-// Su mobile teniamo l'area del terminale ancorata alla viewport visibile,
-// così l'input resta sopra la tastiera quando compare.
+// Su mobile ancoriamo il terminale alla porzione di schermo VISIBILE sopra la
+// tastiera: ne riduciamo l'altezza al visual viewport e annulliamo l'auto-scroll
+// della pagina fatto dal browser — così l'output resta visibile e l'input sale
+// appena sopra la tastiera, invece di far "salire tutto".
 if (isTouch && window.visualViewport) {
   const vv = window.visualViewport;
   const applyViewportHeight = () => {
     const terminal = document.querySelector('.terminal');
     if (terminal) terminal.style.height = vv.height + 'px';
+    window.scrollTo(0, 0); // annulla lo scroll di pagina che il browser fa all'apertura tastiera
     scrollToBottom();
   };
   vv.addEventListener('resize', applyViewportHeight);
+  vv.addEventListener('scroll', applyViewportHeight);
+  input.addEventListener('focus', () => setTimeout(applyViewportHeight, 100));
 }
 
 // Riadatta il banner ASCII e invalida le cache del cursore al resize.

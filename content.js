@@ -24,7 +24,6 @@ window.PORTFOLIO = {
   phone: "",
   github: "Yoddikko",                                        // SOLO l'username
   linkedin: "https://www.linkedin.com/in/alessio-iodice-4a22131b0/",
-  website: "https://yoddikko.github.io/",
   behance: "https://behance.net/yoddale",
   cvUrl: "https://drive.google.com/file/d/1xQOp-skncx-j7neIY_iMbyJ5SqhGXGVo/view?usp=sharing",
 
