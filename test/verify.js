@@ -94,7 +94,7 @@ const assert = (c, m) => { if (!c) { console.error('FAIL:', m); failed++; } else
   // Ogni comando senza argomenti produce output senza errori.
   for (const c of ['about', 'skills', 'projects', 'experience', 'education', 'certifications',
     'awards', 'contact', 'curriculum', 'whoami', 'pwd', 'ls', 'help']) {
-    try { const out = R.commands[c](); assert(typeof out === 'string' && out.length > 0, `${c}() returns text`); }
+    try { const out = await R.commands[c](); assert(typeof out === 'string' && out.length > 0, `${c}() returns text`); }
     catch (e) { assert(false, `${c}() threw: ${e.message}`); }
   }
   // Comandi con argomenti.
