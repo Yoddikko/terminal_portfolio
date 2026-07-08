@@ -45,10 +45,11 @@ function manFor(name) {
 }
 
 // --- Risoluzione CV: usa la versione più alta presente in assets/ ---
-// Convenzione: assets/cv-<N>.pdf (es. cv-2.pdf per la 2.0). Prova dalle versioni
-// più alte alle più basse e usa la prima che esiste (risultato in cache).
+// Convenzione: assets/cv-<major>[.<minor>].pdf  (es. cv-2.pdf, cv-2.1.pdf, cv-3.0.pdf).
+// Prova dalle versioni più alte alle più basse e usa la prima che esiste (in cache).
 // content.js -> cvUrl (se valorizzato) forza un percorso e salta il probe.
-const CV_MAX_VERSION = 12;
+const CV_MAX_MAJOR = 6;
+const CV_MAX_MINOR = 9;
 let _cvUrlCache; // undefined = non ancora risolto
 
 function cvExists(url) {
@@ -58,10 +59,13 @@ function cvExists(url) {
 async function resolveCvUrl() {
   if (_cvUrlCache !== undefined) return _cvUrlCache;
   if (data.cvUrl) { _cvUrlCache = data.cvUrl; return _cvUrlCache; }
-  for (let v = CV_MAX_VERSION; v >= 1; v--) {
-    for (const url of [`assets/cv-${v}.pdf`, `assets/cv-${v}.0.pdf`]) {
-      if (await cvExists(url)) { _cvUrlCache = url; return url; }
+  for (let M = CV_MAX_MAJOR; M >= 1; M--) {
+    for (let m = CV_MAX_MINOR; m >= 0; m--) {
+      const u = `assets/cv-${M}.${m}.pdf`;
+      if (await cvExists(u)) { _cvUrlCache = u; return u; }
     }
+    const bare = `assets/cv-${M}.pdf`;
+    if (await cvExists(bare)) { _cvUrlCache = bare; return bare; }
   }
   if (await cvExists('assets/cv.pdf')) { _cvUrlCache = 'assets/cv.pdf'; return _cvUrlCache; }
   _cvUrlCache = '';
@@ -110,7 +114,7 @@ const commands = {
   },
   curriculum: async () => {
     const url = await resolveCvUrl();
-    if (!url) return `<i aria-hidden="true" class="fas fa-times-circle"></i> CV not found — add it to assets as cv-&lt;version&gt;.pdf (e.g. assets/cv-2.pdf).`;
+    if (!url) return `<i aria-hidden="true" class="fas fa-times-circle"></i> CV not found — add it to assets as cv-&lt;major&gt;.&lt;minor&gt;.pdf (e.g. assets/cv-2.1.pdf).`;
     return `<i aria-hidden="true" class="fas fa-paperclip"></i> CV: `
       + `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="gh-link">open / download</a>`;
   },
