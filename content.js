@@ -128,7 +128,7 @@ window.PORTFOLIO = {
       role: "QA Automation Engineer",
       company: "M47 Labs",
       period: "August 2023 – Present · Madrid, ES",
-      details: "After the Apple Developer Academy I joined M47 Labs, a tech company focused on AI technology and projects with leading IT companies. I work as a QA Automation Engineer, focusing on unit testing and code maintenance.",
+      details: "After the Apple Developer Academy I joined M47 Labs, a tech company focused on AI technology and projects with leading IT companies. I work as a QA Automation Engineer, focusing on unit testing, code maintenance and the creation of internal tools.",
     },
   ],
 
