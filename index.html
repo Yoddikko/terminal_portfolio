@@ -42,6 +42,7 @@
         <div class="titlebar">
           <span class="dots"><span></span><span></span><span></span></span>
           <span class="title">alessio@portfolio — zsh</span>
+          <button id="cv-toggle" class="titlebar-btn cv-toggle" type="button" aria-label="View as a readable CV" title="Readable / CV view"><i aria-hidden="true" class="fas fa-file-lines"></i><span class="cv-toggle-label">CV</span></button>
           <button id="theme-toggle" class="titlebar-btn" type="button" aria-label="Switch color theme" title="Switch color theme">◑</button>
         </div>
         <div class="term-body">
@@ -59,7 +60,16 @@
           </div>
         </div>
       </div>
-      
+
+    <!-- Vista leggibile (CV) per HR / lettura non-terminale -->
+    <div id="cv-view" hidden role="dialog" aria-modal="true" aria-label="Readable portfolio (CV)">
+      <div class="cv-bar">
+        <button id="cv-back" type="button" class="cv-btn"><i aria-hidden="true" class="fas fa-arrow-left"></i> Back to terminal</button>
+        <button id="cv-print" type="button" class="cv-btn"><i aria-hidden="true" class="fas fa-print"></i> Print / Save PDF</button>
+      </div>
+      <article id="cv-content" class="cv-content"></article>
+    </div>
+
   <!-- Dati editabili (unica fonte di verità) -->
   <script src="content.js"></script>
   <!-- Moduli dell'app, in ordine di dipendenza (script classici, no build) -->
@@ -70,6 +80,7 @@
   <script src="js/terminal.js"></script>
   <script src="js/input.js"></script>
   <script src="js/theme.js"></script>
+  <script src="js/cv.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

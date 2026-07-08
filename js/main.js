@@ -126,3 +126,27 @@ window.addEventListener('resize', () => {
   const pre = document.getElementById('ascii-art');
   if (pre) fitBanner(pre);
 });
+
+// --- Vista leggibile (CV) ---
+const cvToggle = document.getElementById('cv-toggle');
+if (cvToggle) cvToggle.addEventListener('click', openCv);
+const cvBack = document.getElementById('cv-back');
+if (cvBack) cvBack.addEventListener('click', closeCv);
+const cvPrint = document.getElementById('cv-print');
+if (cvPrint) cvPrint.addEventListener('click', () => window.print());
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.body.classList.contains('cv-open')) closeCv();
+});
+
+// Focus trap: con la vista CV aperta, Tab/Shift+Tab restano dentro il dialog
+// (coerente con aria-modal). Il terminale è già fuori dal tab-order.
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || !document.body.classList.contains('cv-open')) return;
+  const view = document.getElementById('cv-view');
+  if (!view) return;
+  const f = Array.from(view.querySelectorAll('button, a[href]')).filter(el => el.offsetParent !== null);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1], active = document.activeElement;
+  if (e.shiftKey && (active === first || !view.contains(active))) { last.focus(); e.preventDefault(); }
+  else if (!e.shiftKey && (active === last || !view.contains(active))) { first.focus(); e.preventDefault(); }
+});
