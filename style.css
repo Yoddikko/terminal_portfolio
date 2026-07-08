@@ -122,6 +122,10 @@ body::before {
   .titlebar .dots span:nth-child(3) { background: #27c93f; }
   .titlebar .title {
     flex: 1;
+    min-width: 0;              /* può restringersi: non spinge i bottoni fuori dalla barra */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     text-align: center;
     font-size: 0.8rem;
     color: var(--term-dim);
@@ -555,11 +559,15 @@ body::before {
      Readable CV view — documento chiaro e stampabile per gli HR
      ============================================================ */
   .titlebar .cv-toggle {
+    flex: 0 0 auto;
     width: auto;
+    height: 22px;
     padding: 0 10px;
     gap: 6px;
     font-size: 0.78rem;
     letter-spacing: 0.3px;
+    white-space: nowrap;
+    line-height: 1;
   }
 
   #cv-view {
