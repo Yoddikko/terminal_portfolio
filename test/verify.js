@@ -11,7 +11,7 @@ const ROOT = path.join(__dirname, '..');
 const ORDER = [
   'content.js',
   'js/core.js', 'js/data.js', 'js/github.js', 'js/commands.js',
-  'js/terminal.js', 'js/input.js', 'js/theme.js', 'js/main.js',
+  'js/terminal.js', 'js/input.js', 'js/theme.js', 'js/cv.js', 'js/main.js',
 ];
 
 function makeEl() {
@@ -34,7 +34,7 @@ function makeEl() {
 }
 
 const ids = {};
-['output', 'input', 'cursor', 'sr-announce', 'cmdbar', 'theme-toggle'].forEach(id => { ids[id] = makeEl(); ids[id].id = id; });
+['output', 'input', 'cursor', 'sr-announce', 'cmdbar', 'theme-toggle', 'cv-toggle', 'cv-view', 'cv-back', 'cv-print', 'cv-content'].forEach(id => { ids[id] = makeEl(); ids[id].id = id; });
 const domReady = [];
 const doc = {
   body: makeEl(), documentElement: makeEl(),
@@ -71,7 +71,7 @@ sandbox.globalThis = sandbox;
 
 let src = '';
 for (const f of ORDER) src += `\n;// ${f}\n` + fs.readFileSync(path.join(ROOT, f), 'utf8') + '\n';
-src += '\n;__result = { commands, data, runCommand };\n';
+src += '\n;__result = { commands, data, runCommand, buildCvView, openCv, closeCv };\n';
 
 try { vm.runInContext(src, vm.createContext(sandbox), { filename: 'concat.js' }); }
 catch (e) { console.error('LOAD ERROR:', e && e.message); process.exit(1); }
@@ -94,7 +94,7 @@ const assert = (c, m) => { if (!c) { console.error('FAIL:', m); failed++; } else
   // Ogni comando senza argomenti produce output senza errori.
   for (const c of ['about', 'skills', 'projects', 'experience', 'education', 'certifications',
     'awards', 'contact', 'curriculum', 'whoami', 'pwd', 'ls', 'help']) {
-    try { const out = R.commands[c](); assert(typeof out === 'string' && out.length > 0, `${c}() returns text`); }
+    try { const out = await R.commands[c](); assert(typeof out === 'string' && out.length > 0, `${c}() returns text`); }
     catch (e) { assert(false, `${c}() threw: ${e.message}`); }
   }
   // Comandi con argomenti.
@@ -108,6 +108,17 @@ const assert = (c, m) => { if (!c) { console.error('FAIL:', m); failed++; } else
     try { await R.runCommand(c); assert(true, `runCommand("${c}") ok`); }
     catch (e) { assert(false, `runCommand("${c}") threw: ${e.message}`); }
   }
+
+  // Vista CV: build + open/close senza errori, contenuto popolato.
+  assert(typeof R.buildCvView === 'function', 'buildCvView defined');
+  try {
+    R.openCv();
+    const html = ids['cv-content'].innerHTML;
+    assert(typeof html === 'string' && html.length > 0, 'CV view content populated');
+    assert(/Experience|Education|Projects/.test(html), 'CV view has sections');
+    R.closeCv();
+    assert(true, 'openCv/closeCv ok');
+  } catch (e) { assert(false, `CV view threw: ${e.message}`); }
 
   console.log(failed ? `\nRESULT: ${failed} FAILURE(S)` : '\nRESULT: ALL PASS');
   process.exit(failed ? 1 : 0);

@@ -24,9 +24,11 @@ window.PORTFOLIO = {
   phone: "+39 3382183105",
   github: "Yoddikko",                                        // SOLO l'username
   linkedin: "https://www.linkedin.com/in/alessio-iodice-4a22131b0/",
-  website: "https://yoddikko.github.io/",
   behance: "https://behance.net/yoddale",
-  cvUrl: "https://drive.google.com/file/d/1xQOp-skncx-j7neIY_iMbyJ5SqhGXGVo/view?usp=sharing",
+  // CV: il sito usa automaticamente la versione più alta presente in assets/,
+  // con la convenzione  assets/cv-<N>.pdf  (es. cv-2.pdf per la 2.0, cv-3.pdf, …).
+  // Lascia vuoto per l'auto-detect; imposta un URL/percorso solo per forzarlo.
+  cvUrl: "",
 
   // ---------------------------- LINGUE & INTERESSI --------------------------
   languages: ["Italian (native)", "English (C1)", "Spanish (A1)"],

@@ -44,6 +44,30 @@ function manFor(name) {
   return `<span class="field-label">${escapeHtml(name)}</span> — ${escapeHtml(commandHelp[name])}`;
 }
 
+// --- Risoluzione CV: usa la versione più alta presente in assets/ ---
+// Convenzione: assets/cv-<N>.pdf (es. cv-2.pdf per la 2.0). Prova dalle versioni
+// più alte alle più basse e usa la prima che esiste (risultato in cache).
+// content.js -> cvUrl (se valorizzato) forza un percorso e salta il probe.
+const CV_MAX_VERSION = 12;
+let _cvUrlCache; // undefined = non ancora risolto
+
+function cvExists(url) {
+  return fetch(url, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+}
+
+async function resolveCvUrl() {
+  if (_cvUrlCache !== undefined) return _cvUrlCache;
+  if (data.cvUrl) { _cvUrlCache = data.cvUrl; return _cvUrlCache; }
+  for (let v = CV_MAX_VERSION; v >= 1; v--) {
+    for (const url of [`assets/cv-${v}.pdf`, `assets/cv-${v}.0.pdf`]) {
+      if (await cvExists(url)) { _cvUrlCache = url; return url; }
+    }
+  }
+  if (await cvExists('assets/cv.pdf')) { _cvUrlCache = 'assets/cv.pdf'; return _cvUrlCache; }
+  _cvUrlCache = '';
+  return _cvUrlCache;
+}
+
 const commands = {
   help: (args) => {
     const target = ((args && args[0]) || '').toLowerCase();
@@ -78,20 +102,17 @@ const commands = {
       out += `<br><i aria-hidden="true" class="fab fa-linkedin"></i> `
         + `<a href="${escapeHtml(data.linkedinUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
     }
-    if (data.website) {
-      out += `<br><i aria-hidden="true" class="fas fa-globe"></i> `
-        + `<a href="${escapeHtml(data.website)}" target="_blank" rel="noopener noreferrer" class="gh-link">Website</a>`;
-    }
     if (data.behance) {
       out += `<br><i aria-hidden="true" class="fab fa-behance"></i> `
         + `<a href="${escapeHtml(data.behance)}" target="_blank" rel="noopener noreferrer" class="gh-link">Behance</a>`;
     }
     return out;
   },
-  curriculum: () => {
-    if (!data.cvUrl) return `<i aria-hidden="true" class="fas fa-times-circle"></i> No CV configured (set cvUrl in content.js).`;
+  curriculum: async () => {
+    const url = await resolveCvUrl();
+    if (!url) return `<i aria-hidden="true" class="fas fa-times-circle"></i> CV not found — add it to assets as cv-&lt;version&gt;.pdf (e.g. assets/cv-2.pdf).`;
     return `<i aria-hidden="true" class="fas fa-paperclip"></i> CV: `
-      + `<a href="${escapeHtml(data.cvUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">open / download</a>`;
+      + `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="gh-link">open / download</a>`;
   },
 
   // --- comandi "filesystem" per il feel da terminale ---
