@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax check all JS
+        run: |
+          for f in content.js js/*.js test/*.js; do
+            echo "checking $f"
+            node --check "$f"
+          done
+      - name: Verify modules load & data integrity
+        run: node test/verify.js

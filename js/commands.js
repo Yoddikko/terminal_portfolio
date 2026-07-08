@@ -4,17 +4,59 @@
 
 const hiddenCommands = ['bellaraga'];
 // Comandi che richiedono argomenti: non li elenchiamo tra i link/chip cliccabili.
-const argCommands = ['echo', 'cat'];
+const argCommands = ['echo', 'cat', 'man'];
+
+// "File" mostrati da `ls` e completati da Tab dopo `cat `.
+const CAT_FILES = [
+  'about.txt', 'skills.txt', 'projects/', 'experience.log', 'education.log',
+  'certifications.log', 'awards.log', 'contact.txt', 'cv.pdf'
+];
+
+// Descrizioni per `help <comando>` / `man <comando>`.
+const commandHelp = {
+  about: 'Short intro: who I am, role, location and languages.',
+  skills: 'Technical stack grouped by area, plus soft skills.',
+  projects: 'Selected projects, with links and AI-usage tags.',
+  experience: 'Work experience.',
+  education: 'Academic background and programs.',
+  certifications: 'Certifications and courses.',
+  awards: 'Awards and recognitions.',
+  github: 'Live GitHub stats: followers, total stars and top repos.',
+  linkedin: 'Link to my LinkedIn profile.',
+  contact: 'Email, phone and social links.',
+  curriculum: 'Open / download my CV.',
+  whoami: 'Print my name, role and location.',
+  ls: 'List the "files" you can open with cat.',
+  cat: 'Print a file. Usage: cat <file> (e.g. cat about.txt).',
+  pwd: 'Print the working directory.',
+  date: 'Print the current date and time.',
+  echo: 'Echo the given text. Usage: echo <text>.',
+  clear: 'Clear the screen.',
+  help: 'List commands, or "help <command>" for details.',
+  man: 'Show the manual for a command. Usage: man <command>.'
+};
+
+function manFor(name) {
+  if (!name) return 'usage: man &lt;command&gt;';
+  if (hiddenCommands.includes(name) || !(name in commandHelp)) {
+    return `<i aria-hidden="true" class="fas fa-times-circle"></i> No manual entry for ${escapeHtml(name)}`;
+  }
+  return `<span class="field-label">${escapeHtml(name)}</span> — ${escapeHtml(commandHelp[name])}`;
+}
 
 const commands = {
-  help: () => {
+  help: (args) => {
+    const target = ((args && args[0]) || '').toLowerCase();
+    if (target) return manFor(target);
     const available = Object.keys(commands)
       .filter(c => c !== 'clear' && c !== 'help'
         && !hiddenCommands.includes(c) && !argCommands.includes(c));
-    return `<i class="fas fa-lightbulb"></i> Available commands:\n` +
+    return `<i aria-hidden="true" class="fas fa-lightbulb"></i> Available commands:\n` +
       available.map(c => `- ${cmdLink(c)}`).join('\n') +
-      `\n\nTips: <strong>Tab</strong> = autocomplete · <strong>↑/↓</strong> = history · try <strong>echo</strong> / <strong>cat &lt;file&gt;</strong>`;
+      `\n\nTips: <strong>Tab</strong> = autocomplete · <strong>↑/↓</strong> = history · ` +
+      `<strong>help &lt;cmd&gt;</strong> / <strong>man &lt;cmd&gt;</strong> for details · try <strong>cat &lt;file&gt;</strong>`;
   },
+  man: (args) => manFor(((args && args[0]) || '').toLowerCase()),
   about: () => data.about || '',
   skills: () => data.skills || '',
   projects: () => formatProjects(data.projects || []),
@@ -23,44 +65,45 @@ const commands = {
   certifications: () => formatCertifications(data.certifications || []),
   awards: () => formatAwards(data.awards || []),
   github: () => githubCommand(data.githubUsername),
-  linkedin: () => ` <a href="${data.linkedinUrl}" target="_blank" rel="noopener noreferrer" class="gh-link"><i class="fab fa-linkedin"></i> LinkedIn Profile</a>`,
+  linkedin: () => ` <a href="${escapeHtml(data.linkedinUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link"><i aria-hidden="true" class="fab fa-linkedin"></i> LinkedIn Profile</a>`,
   contact: () => {
-    let out = `<i class="fas fa-envelope"></i> Email: `
-      + `<a href="mailto:${data.email}" class="gh-link">${escapeHtml(data.email)}</a>`
+    let out = `<i aria-hidden="true" class="fas fa-envelope"></i> Email: `
+      + `<a href="mailto:${escapeHtml(data.email)}" class="gh-link">${escapeHtml(data.email)}</a>`
       + ` <button type="button" class="copy-btn" data-copy="${escapeHtml(data.email)}" aria-label="Copy email to clipboard">copy</button>`;
     if (data.phone) {
-      out += `<br><i class="fas fa-phone"></i> Phone: `
+      out += `<br><i aria-hidden="true" class="fas fa-phone"></i> Phone: `
         + `<a href="tel:${escapeHtml(data.phone.replace(/\s/g, ''))}" class="gh-link">${escapeHtml(data.phone)}</a>`;
     }
     if (data.linkedinUrl && data.linkedinUrl !== '#') {
-      out += `<br><i class="fab fa-linkedin"></i> `
-        + `<a href="${data.linkedinUrl}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
+      out += `<br><i aria-hidden="true" class="fab fa-linkedin"></i> `
+        + `<a href="${escapeHtml(data.linkedinUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">LinkedIn</a>`;
     }
     if (data.website) {
-      out += `<br><i class="fas fa-globe"></i> `
-        + `<a href="${data.website}" target="_blank" rel="noopener noreferrer" class="gh-link">Website</a>`;
+      out += `<br><i aria-hidden="true" class="fas fa-globe"></i> `
+        + `<a href="${escapeHtml(data.website)}" target="_blank" rel="noopener noreferrer" class="gh-link">Website</a>`;
     }
     if (data.behance) {
-      out += `<br><i class="fab fa-behance"></i> `
-        + `<a href="${data.behance}" target="_blank" rel="noopener noreferrer" class="gh-link">Behance</a>`;
+      out += `<br><i aria-hidden="true" class="fab fa-behance"></i> `
+        + `<a href="${escapeHtml(data.behance)}" target="_blank" rel="noopener noreferrer" class="gh-link">Behance</a>`;
     }
     return out;
   },
   curriculum: () => {
-    if (!data.cvUrl) return `<i class="fas fa-times-circle"></i> No CV configured (set cvUrl in content.js).`;
-    return `<i class="fas fa-paperclip"></i> CV: `
-      + `<a href="${data.cvUrl}" target="_blank" rel="noopener noreferrer" class="gh-link">open / download</a>`;
+    if (!data.cvUrl) return `<i aria-hidden="true" class="fas fa-times-circle"></i> No CV configured (set cvUrl in content.js).`;
+    return `<i aria-hidden="true" class="fas fa-paperclip"></i> CV: `
+      + `<a href="${escapeHtml(data.cvUrl)}" target="_blank" rel="noopener noreferrer" class="gh-link">open / download</a>`;
   },
 
   // --- comandi "filesystem" per il feel da terminale ---
-  whoami: () => 'alessio',
+  whoami: () => {
+    const head = [data.name, data.title].filter(Boolean).join(' — ');
+    const full = head + (data.location ? ` · ${data.location}` : '');
+    return escapeHtml(full) || 'alessio';
+  },
   pwd: () => '/home/alessio',
   date: () => new Date().toString(),
   echo: (args) => escapeHtml((args || []).join(' ')),
-  ls: () => [
-    'about.txt', 'skills.txt', 'projects/', 'experience.log',
-    'education.log', 'certifications.log', 'awards.log', 'contact.txt', 'cv.pdf'
-  ].join('&nbsp;&nbsp;&nbsp;'),
+  ls: () => CAT_FILES.join('&nbsp;&nbsp;&nbsp;'),
   cat: (args) => {
     const map = {
       'about.txt': 'about',

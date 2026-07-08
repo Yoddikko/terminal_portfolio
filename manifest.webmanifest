@@ -1,0 +1,24 @@
+{
+  "name": "Alessio Iodice — Terminal Portfolio",
+  "short_name": "Alessio Iodice",
+  "description": "Terminal-style portfolio of Alessio Iodice — QA Automation Engineer & Mobile Developer.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0e0a",
+  "theme_color": "#0a0e0a",
+  "icons": [
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
