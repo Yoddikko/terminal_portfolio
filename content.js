@@ -21,7 +21,6 @@ window.PORTFOLIO = {
 
   // ---------------------------- CONTATTI & LINK -----------------------------
   email: "alessioiodiceuni@gmail.com",
-  phone: "+39 3382183105",
   github: "Yoddikko",                                        // SOLO l'username
   linkedin: "https://www.linkedin.com/in/alessio-iodice-4a22131b0/",
   behance: "https://behance.net/yoddale",
