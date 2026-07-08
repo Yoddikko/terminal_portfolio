@@ -152,7 +152,7 @@ async function showWelcomeMessage() {
   fitBanner(pre);
 
   const lines = [
-    '<i class="fas fa-hand-peace"></i> Welcome to my terminal-style portfolio!',
+    '<i aria-hidden="true" class="fas fa-hand-peace"></i> Welcome to my terminal-style portfolio!',
     `Try these commands: ${cmdLink('about')}, ${cmdLink('projects')}, ${cmdLink('github')}, ${cmdLink('help')}`,
     isTouch
       ? 'Tip: tap a command below, or tap here to type.'
