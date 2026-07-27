@@ -50,6 +50,17 @@ window.PORTFOLIO = {
   //  (none|low|medium|high|vibecoded), links: [ {name, url}, ... ]
   projects: [
     {
+      name: "KasetPlus",
+      description: "The missing YouTube and YouTube Music macOS app. KasetPlus adds AdBlocker, SponsorBlocker, Return YouTube Dislike and other features.",
+      year: "2026",
+      aiUsed: true,
+      aiLevel: "vibecoded",
+      links: [
+        { name: "Website", url: "https://yoddikko.github.io/kasetPlus/" },
+        { name: "GitHub", url: "https://github.com/Yoddikko/kasetPlus" },
+      ],
+    },
+    {
       name: "AutoMercatorum",
       description: "A set of tools that assist you throughout your studies at Università degli Studi Mercatorum.",
       year: "2026",
